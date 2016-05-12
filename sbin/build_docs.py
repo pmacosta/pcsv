@@ -189,6 +189,7 @@ def insert_files_in_rsts(pkg_dir, cog_exe):
     """ Cog-insert source files in Sphinx files """
     fnames = [
         os.path.join(pkg_dir, 'docs', 'README.rst'),
+        os.path.join(pkg_dir, 'README.rst'),
     ]
     print('Inserting source files in documentation files')
     for fname in fnames:
@@ -375,12 +376,16 @@ def generate_top_level_readme(pkg_dir):
                 literalinclude = False
                 lrange = line.lstrip().replace(':lines:', '').strip()
                 tstr = (
-                    '.. docs.support.incfile.incfile('
-                    '"{0}", cog.out, "{1}", "../")'
+                    '.. docs.support.incfile.incfile(\n'
+                    '..     "{0}",\n'
+                    '..     cog.out,\n'
+                    '..     "{1}",\n'
+                    '..     None\n'
+                    '.. )'
                 )
                 ret.append('.. [[[cog')
                 ret.append('.. import docs.support.incfile')
-                ret.append(tstr.format(fname, lrange))
+                ret.append(tstr.format(os.path.basename(fname), lrange))
                 ret.append('.. ]]]')
                 ret.append('.. [[[end]]]')
         elif match1:

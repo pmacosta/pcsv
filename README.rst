@@ -91,8 +91,43 @@ Read/write
 
 .. [[[cog
 .. import docs.support.incfile
-.. docs.support.incfile.incfile("./support/pcsv_example_1.py", cog.out, "1,6-", "../")
+.. docs.support.incfile.incfile(
+..     "pcsv_example_1.py",
+..     cog.out,
+..     "1,6-",
+..     None
+.. )
 .. ]]]
+.. code-block:: python
+
+    # pcsv_example_1.py
+    import pmisc, pcsv
+
+    def main():
+        with pmisc.TmpFile() as fname:
+            ref_data = [
+                ['Item', 'Cost'],
+                [1, 9.99],
+                [2, 10000],
+                [3, 0.10]
+            ]
+            # Write reference data to a file
+            pcsv.write(fname, ref_data, append=False)
+            # Read the data back
+            obj = pcsv.CsvFile(fname)
+        # After the object creation the I/O is done,
+        # can safely remove file (exit context manager)
+        # Check that data read is correct
+        assert obj.header() == ref_data[0]
+        assert obj.data() == ref_data[1:]
+        # Add a simple row filter, only look at rows that have
+        # values 1 and 3 in the "Items" column
+        obj.rfilter = {'Item':[1, 3]}
+        assert obj.data(filtered=True) == [ref_data[1], ref_data[3]]
+
+    if __name__ == '__main__':
+        main()
+
 .. [[[end]]]
 
 Replace data
@@ -100,8 +135,63 @@ Replace data
 
 .. [[[cog
 .. import docs.support.incfile
-.. docs.support.incfile.incfile("./support/pcsv_example_2.py", cog.out, "1,6-", "../")
+.. docs.support.incfile.incfile(
+..     "pcsv_example_2.py",
+..     cog.out,
+..     "1,6-",
+..     None
+.. )
 .. ]]]
+.. code-block:: python
+
+    # pcsv_example_2.py
+    import pmisc, pcsv
+
+    def main():
+        ctx = pmisc.TmpFile
+        with ctx() as fname1:
+            with ctx() as fname2:
+                with ctx() as ofname:
+                    # Create first (input) data file
+                    input_data = [
+                        ['Item', 'Cost'],
+                        [1, 9.99],
+                        [2, 10000],
+                        [3, 0.10]
+                    ]
+                    pcsv.write(fname1, input_data, append=False)
+                    # Create second (replacement) data file
+                    replacement_data = [
+                        ['Staff', 'Rate', 'Days'],
+                        ['Joe', 10, 'Sunday'],
+                        ['Sue', 20, 'Thursday'],
+                        ['Pat', 15, 'Tuesday']
+                    ]
+                    pcsv.write(fname2, replacement_data, append=False)
+                    # Replace "Cost" column of input file with "Rate" column
+                    # of replacement file for "Items" 2 and 3 with "Staff" data
+                    # from Joe and Pat. Save resulting data to another file
+                    pcsv.replace(
+                        fname1=fname1,
+                        dfilter1=('Cost', {'Item':[1, 3]}),
+                        fname2=fname2,
+                        dfilter2=('Rate', {'Staff':['Joe', 'Pat']}),
+                        ofname=ofname
+                    )
+                    # Verify that resulting file is correct
+                    ref_data = [
+                        ['Item', 'Cost'],
+                        [1, 10],
+                        [2, 10000],
+                        [3, 15]
+                    ]
+                    obj = pcsv.CsvFile(ofname)
+                    assert obj.header() == ref_data[0]
+                    assert obj.data() == ref_data[1:]
+
+    if __name__ == '__main__':
+        main()
+
 .. [[[end]]]
 
 Concatenate two files
@@ -109,8 +199,65 @@ Concatenate two files
 
 .. [[[cog
 .. import docs.support.incfile
-.. docs.support.incfile.incfile("./support/pcsv_example_3.py", cog.out, "1,6-", "../")
+.. docs.support.incfile.incfile(
+..     "pcsv_example_3.py",
+..     cog.out,
+..     "1,6-",
+..     None
+.. )
 .. ]]]
+.. code-block:: python
+
+    # pcsv_example_3.py
+    import pmisc, pcsv
+
+    def main():
+        ctx = pmisc.TmpFile
+        with ctx() as fname1:
+            with ctx() as fname2:
+                with ctx() as ofname:
+                    # Create first data file
+                    data1 = [
+                        [1, 9.99],
+                        [2, 10000],
+                        [3, 0.10]
+                    ]
+                    pcsv.write(fname1, data1, append=False)
+                    # Create second data file
+                    data2 = [
+                        ['Joe', 10, 'Sunday'],
+                        ['Sue', 20, 'Thursday'],
+                        ['Pat', 15, 'Tuesday']
+                    ]
+                    pcsv.write(fname2, data2, append=False)
+                    # Concatenate file1 and file2. Filter out
+                    # second column of file2
+                    pcsv.concatenate(
+                        fname1=fname1,
+                        fname2=fname2,
+                        has_header1=False,
+                        has_header2=False,
+                        dfilter2=[0, 2],
+                        ofname=ofname,
+                        ocols=['D1', 'D2']
+                    )
+                    # Verify that resulting file is correct
+                    ref_data = [
+                        ['D1', 'D2'],
+                        [1, 9.99],
+                        [2, 10000],
+                        [3, 0.10],
+                        ['Joe', 'Sunday'],
+                        ['Sue', 'Thursday'],
+                        ['Pat', 'Tuesday']
+                    ]
+                    obj = pcsv.CsvFile(ofname)
+                    assert obj.header() == ref_data[0]
+                    assert obj.data() == ref_data[1:]
+
+    if __name__ == '__main__':
+        main()
+
 .. [[[end]]]
 
 Merge two files
@@ -118,8 +265,58 @@ Merge two files
 
 .. [[[cog
 .. import docs.support.incfile
-.. docs.support.incfile.incfile("./support/pcsv_example_4.py", cog.out, "1,6-", "../")
+.. docs.support.incfile.incfile(
+..     "pcsv_example_4.py",
+..     cog.out,
+..     "1,6-",
+..     None
+.. )
 .. ]]]
+.. code-block:: python
+
+    # pcsv_example_4.py
+    import pmisc, pcsv
+
+    def main():
+        ctx = pmisc.TmpFile
+        with ctx() as fname1:
+            with ctx() as fname2:
+                with ctx() as ofname:
+                    # Create first data file
+                    data1 = [
+                        [1, 9.99],
+                        [2, 10000],
+                        [3, 0.10]
+                    ]
+                    pcsv.write(fname1, data1, append=False)
+                    # Create second data file
+                    data2 = [
+                        ['Joe', 10, 'Sunday'],
+                        ['Sue', 20, 'Thursday'],
+                        ['Pat', 15, 'Tuesday']
+                    ]
+                    pcsv.write(fname2, data2, append=False)
+                    # Merge file1 and file2
+                    pcsv.merge(
+                        fname1=fname1,
+                        has_header1=False,
+                        fname2=fname2,
+                        has_header2=False,
+                        ofname=ofname
+                    )
+                    # Verify that resulting file is correct
+                    ref_data = [
+                        [1, 9.99, 'Joe', 10, 'Sunday'],
+                        [2, 10000, 'Sue', 20, 'Thursday'],
+                        [3, 0.10, 'Pat', 15, 'Tuesday'],
+                    ]
+                    obj = pcsv.CsvFile(ofname, has_header=False)
+                    assert obj.header() == list(range(0, 5))
+                    assert obj.data() == ref_data
+
+    if __name__ == '__main__':
+        main()
+
 .. [[[end]]]
 
 Sort a file
@@ -127,8 +324,54 @@ Sort a file
 
 .. [[[cog
 .. import docs.support.incfile
-.. docs.support.incfile.incfile("./support/pcsv_example_5.py", cog.out, "1,6-", "../")
+.. docs.support.incfile.incfile(
+..     "pcsv_example_5.py",
+..     cog.out,
+..     "1,6-",
+..     None
+.. )
 .. ]]]
+.. code-block:: python
+
+    # pcsv_example_5.py
+    import pmisc, pcsv
+
+    def main():
+        ctx = pmisc.TmpFile
+        with ctx() as ifname:
+            with ctx() as ofname:
+                # Create first data file
+                data = [
+                    ['Ctrl', 'Ref', 'Result'],
+                    [1, 3, 10],
+                    [1, 4, 20],
+                    [2, 4, 30],
+                    [2, 5, 40],
+                    [3, 5, 50]
+                ]
+                pcsv.write(ifname, data, append=False)
+                # Sort
+                pcsv.dsort(
+                    fname=ifname,
+                    order=[{'Ctrl':'D'}, {'Ref':'A'}],
+                    has_header=True,
+                    ofname=ofname
+                )
+                # Verify that resulting file is correct
+                ref_data = [
+                    [3, 5, 50],
+                    [2, 4, 30],
+                    [2, 5, 40],
+                    [1, 3, 10],
+                    [1, 4, 20]
+                ]
+                obj = pcsv.CsvFile(ofname, has_header=True)
+                assert obj.header() == ['Ctrl', 'Ref', 'Result']
+                assert obj.data() == ref_data
+
+    if __name__ == '__main__':
+        main()
+
 .. [[[end]]]
 
 Interpreter
