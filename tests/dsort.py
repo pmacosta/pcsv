@@ -7,7 +7,7 @@
 import pmisc
 from pmisc import AE, AI, RE
 import pytest
-# Putil imports
+# Intra-package imports
 import pcsv
 from tests.fixtures import (
     write_cols_not_unique,

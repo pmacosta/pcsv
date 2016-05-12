@@ -9,7 +9,7 @@ import sys
 # PyPI imports
 import pmisc
 from pmisc import AE, AI, RE
-# Putil imports
+# Intra-package imports
 if sys.hexversion < 0x03000000:
     from pcsv.compat2 import _write
 else:

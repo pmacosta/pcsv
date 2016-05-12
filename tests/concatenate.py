@@ -7,7 +7,7 @@
 import pmisc
 from pmisc import AE, RE
 import pytest
-# Putil imports
+# Intra-package imports
 import pcsv
 from tests.fixtures import (
     common_exceptions,

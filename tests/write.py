@@ -14,7 +14,7 @@ from pmisc import AE, AI
 import pytest
 if sys.hexversion < 0x03000000:
     import mock
-# Putil imports
+# Intra-package imports
 import pcsv
 if sys.hexversion < 0x03000000:
     from pcsv.compat2 import _read

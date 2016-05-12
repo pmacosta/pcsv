@@ -60,7 +60,6 @@ Description
 .. _Astroid: https://bitbucket.org/logilab/astroid
 .. _Cog: http://nedbatchelder.com/code/cog
 .. _Coverage: http://coverage.readthedocs.org/en/coverage-4.0a5
-.. _Decorator: https://pythonhosted.org/decorator
 .. _Docutils: http://docutils.sourceforge.net/docs
 .. _Mock: http://www.voidspace.org.uk/python/mock
 .. _Pexdoc: http://pexdoc.readthedocs.org
@@ -446,8 +445,6 @@ Contributing
     * `Cog`_ (2.4 or newer)
 
     * `Coverage`_ (3.7.1 or newer)
-
-    * `Decorator`_ (3.4.2 or newer)
 
     * `Docutils`_ (0.12 or newer)
 

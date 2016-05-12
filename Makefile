@@ -26,13 +26,13 @@ clean: FORCE
 	@find $(PKG_DIR) -name '*.error' -delete
 	@rm -rf $(PKG_DIR)/build
 	@rm -rf	$(PKG_DIR)/dist
-	@rm -rf $(PKG_DIR)/putil.egg-info
+	@rm -rf $(PKG_DIR)/pcsv.egg-info
 	@rm -rf $(PKG_DIR)/.eggs
 	@rm -rf $(PKG_DIR)/.cache
 	@rm -rf $(PKG_DIR)/docs/_build
 
 distro: docs clean sdist wheel
-	@rm -rf build putil.egg-info
+	@rm -rf build pcsv.egg-info
 
 docs: FORCE
 	@$(PKG_DIR)/sbin/build_docs.py $(ARGS)
@@ -44,7 +44,7 @@ FORCE:
 
 lint:
 	@echo "Running Pylint on package files"
-	@pylint --rcfile=$(PKG_DIR)/.pylintrc -f colorized -r no $(PKG_DIR)/putil
+	@pylint --rcfile=$(PKG_DIR)/.pylintrc -f colorized -r no $(PKG_DIR)/pcsv
 	@pylint --rcfile=$(PKG_DIR)/.pylintrc -f colorized -r no $(PKG_DIR)/sbin
 	@pylint --rcfile=$(PKG_DIR)/.pylintrc -f colorized -r no $(PKG_DIR)/tests
 	@pylint --rcfile=$(PKG_DIR)/.pylintrc -f colorized -r no $(PKG_DIR)/docs/support

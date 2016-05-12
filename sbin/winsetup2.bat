@@ -6,7 +6,7 @@ set PYTHONCMD=python
 set PIPCMD=pip
 set REPO_DIR=%CD%
 set RESULTS_DIR=%REPO_DIR%\results
-set PKG_NAME=putil
+set PKG_NAME=pcsv
 set PYTHON_SITE_PACKAGES=C:\Anaconda\envs\%INTERP%\lib\site-packages
 set BIN_DIR=C:\Anaconda\envs\%INTERP%\Scripts
 set SOURCE_DIR=%PYTHON_SITE_PACKAGES%\%PKG_NAME%
@@ -37,7 +37,7 @@ type %REPO_DIR%\MANIFEST.in
 python .\sbin\fix_windows_symlinks.py
 python setup.py sdist
 cd %REPO_DIR%
-python -c "import sys; sys.path.append(['./putil']);import putil.version; print(putil.version.__version__)" > version.txt
+python -c "import sys; sys.path.append(['./pcsv']);import pcsv.version; print(pcsv.version.__version__)" > version.txt
 set /p PKG_VERSION=<version.txt
 echo "PKG_VERSION=%PKG_VERSION%"
 cd %PYTHON_SITE_PACKAGES%

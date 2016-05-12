@@ -5,7 +5,7 @@
 
 # PyPI imports
 from pmisc import AE
-# Putil imports
+# Intra-package imports
 import pcsv.ptypes
 
 

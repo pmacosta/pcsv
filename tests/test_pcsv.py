@@ -3,7 +3,7 @@
 # See LICENSE for details
 # pylint: disable=C0111,W0611
 
-# Putil imports
+# Intra-package imports
 from .concatenate import (
     test_concatenate,
     test_concatenate_exceptions
