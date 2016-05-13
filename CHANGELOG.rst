@@ -5,6 +5,8 @@
 Changelog
 =========
 
+* 1.0.2 [2016-05-12]: Minor documentation updates
+
 * 1.0.1 [2016-05-12]: Minor documentation updates
 
 * 1.0.0 [2016-05-12]: Final release of 1.0.0 branch
