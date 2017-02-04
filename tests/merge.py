@@ -1,7 +1,7 @@
 # merge.py
 # Copyright (c) 2013-2017 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0103,C0111,C0302,E0611,F0401,R0201,R0915,W0232
+# pylint: disable=C0103,C0111,C0302,C0411,E0611,F0401,R0201,R0915,W0232
 
 # PyPI imports
 import pmisc
