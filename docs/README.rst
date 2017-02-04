@@ -1,5 +1,5 @@
 .. README.rst
-.. Copyright (c) 2013-2016 Pablo Acosta-Serafini
+.. Copyright (c) 2013-2017 Pablo Acosta-Serafini
 .. See LICENSE for details
 
 
@@ -191,8 +191,9 @@ Contributing
     .. ]]]
 
 
-    * `Astroid`_ (Python 2.6: older than 1.4, Python 2.7 or newer: 1.3.8
-      or newer)
+    * `Astroid`_ (Python 2.6: older than 1.4, Python 2.7: 1.3.8 or
+      newer, Python 3.3: 1.3.8 or newer, Python 3.4: 1.3.8 or newer,
+      Python 3.5: 1.3.8 or newer)
 
     * `Cog`_ (2.4 or newer)
 
@@ -221,7 +222,10 @@ Contributing
 
     * `ReadTheDocs Sphinx theme`_ (0.1.9 or newer)
 
-    * `Sphinx`_ (1.2.3 or newer)
+    * `Sphinx`_ (Python 2.6: 1.2.3 or newer and 1.4.9 or older, Python
+      2.7: 1.2.3 or newer, Python 3.3: 1.2.3 or newer and 1.4.9 or
+      older, Python 3.4: 1.2.3 or newer, Python 3.5: 1.2.3 or newer,
+      Python 3.6: 1.2.3 or newer)
 
     * `Tox`_ (1.9.0 or newer)
 
