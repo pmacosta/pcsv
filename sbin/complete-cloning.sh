@@ -50,4 +50,4 @@ else
 fi
 
 # Build documentation
-${bin_dir}/build_docs.py
+tox -e py27-repl -- "${bin_dir}/build_docs.py"
