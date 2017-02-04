@@ -55,6 +55,7 @@ install:
 - set RESULTS_DIR=%REPO_DIR%\results
 - set MAIN_REQUIREMENTS_FILE=%REPO_DIR%\requirements\main_%INTERP%.pip
 - set TESTS_REQUIREMENTS_FILE=%REPO_DIR%\requirements\tests_%INTERP%.pip
+- set DOCS_REQUIREMENTS_FILE=%REPO_DIR%\requirements\docs_%INTERP%.pip
 - set CITMP=%REPO_DIR%\CITMP
 - if not exist "%CITMP%" mkdir %CITMP%
 - echo "INTERP=%INTERP%"
@@ -66,6 +67,7 @@ install:
 - echo "RESULTS_DIR=%RESULTS_DIR%"
 - echo "MAIN_REQUIREMENTS_FILE=%MAIN_REQUIREMENTS_FILE%"
 - echo "TESTS_REQUIREMENTS_FILE=%TESTS_REQUIREMENTS_FILE%"
+- echo "DOCS_REQUIREMENTS_FILE=%DOCS_REQUIREMENTS_FILE%"
 - echo "CITMP=%CITMP%"
 ###
 # Install tools and dependencies of package dependencies
@@ -129,7 +131,7 @@ install:
 - python %REPO_DIR%\sbin\gen_req_files.py freeze
 - pip install --upgrade -r%MAIN_REQUIREMENTS_FILE%
 - pip install --upgrade -r%TESTS_REQUIREMENTS_FILE%
-- pip install --upgrade -r%REPO_DIR%\\requirements\docs.pip
+- pip install --upgrade -r%DOCS_REQUIREMENTS_FILE%
 - pip freeze
 ###
 # Create directories for reports and artifacts

@@ -67,6 +67,7 @@ before_install:
   - export COV_FILE=${SOURCE_DIR}/.coveragerc_ci_${INTERP}
   - export MAIN_REQUIREMENTS_FILE=${REPO_DIR}/requirements/main_${INTERP}.pip
   - export TESTS_REQUIREMENTS_FILE=${REPO_DIR}/requirements/tests_${INTERP}.pip
+  - export DOCS_REQUIREMENTS_FILE=${REPO_DIR}/requirements/docs_${INTERP}.pip
   - export AFILE=${EXTRA_DIR}/artifacts_${INTERP}.tar.gz
   - echo "PYTHONCMD=${PYTHONCMD}"
   - echo "PIPCMD=${PIPCMD}"
@@ -86,6 +87,7 @@ before_install:
   - echo "COV_FILE=${COV_FILE}"
   - echo "MAIN_REQUIREMENTS_FILE=${MAIN_REQUIREMENTS_FILE}"
   - echo "TESTS_REQUIREMENTS_FILE=${TESTS_REQUIREMENTS_FILE}"
+  - echo "DOCS_REQUIREMENTS_FILE=${DOCS_REQUIREMENTS_FILE}"
   - echo "AFILE=${AFILE}"
   ###
   # Install tools and dependencies of package dependencies
@@ -113,7 +115,7 @@ install:
     fi
   - travis_wait ${PIPCMD} install --upgrade -r${MAIN_REQUIREMENTS_FILE}
   - travis_wait ${PIPCMD} install --upgrade -r${TESTS_REQUIREMENTS_FILE}
-  - travis_wait ${PIPCMD} install --upgrade -r${REPO_DIR}/requirements/docs.pip
+  - travis_wait ${PIPCMD} install --upgrade -r${DOCS_REQUIREMENTS_FILE}
   - ${PIPCMD} install codecov
   - ${PIPCMD} freeze
 
