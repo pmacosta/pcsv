@@ -113,9 +113,9 @@ install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
         ${REPO_DIR}/sbin/gen_req_files.py freeze;
     fi
-  - travis_wait ${PIPCMD} install --upgrade -r${MAIN_REQUIREMENTS_FILE}
-  - travis_wait ${PIPCMD} install --upgrade -r${TESTS_REQUIREMENTS_FILE}
-  - travis_wait ${PIPCMD} install --upgrade -r${DOCS_REQUIREMENTS_FILE}
+  - travis_wait ${PIPCMD} install -r${MAIN_REQUIREMENTS_FILE}
+  - travis_wait ${PIPCMD} install -r${TESTS_REQUIREMENTS_FILE}
+  - travis_wait ${PIPCMD} install -r${DOCS_REQUIREMENTS_FILE}
   - ${PIPCMD} install codecov
   - ${PIPCMD} freeze
 
@@ -157,12 +157,17 @@ script:
   - ${SBIN_DIR}/cprint.sh line cyan "Testing project code compliance"
   - ${SBIN_DIR}/check_files_compliance.py -tps -d ${SOURCE_DIR} -m ${EXTRA_DIR}
   - ${SBIN_DIR}/cprint.sh line cyan "Testing Pylint compliance";
-  - pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${SOURCE_DIR}
-  - pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${SBIN_DIR}
-  - pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${EXTRA_DIR}/tests
-  - pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${EXTRA_DIR}/docs/support
+  # pylint 1.6.x appears to have a bug in Python 3.6 that is only going to be fixed with Pylint 2.0
+  - if [ "${TRAVIS_PYTHON_VERSION}" != "3.6" ]; then
+        pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${SOURCE_DIR};
+        pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${SBIN_DIR};
+        pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${EXTRA_DIR}/tests;
+        pylint --rcfile=${EXTRA_DIR}/.pylintrc -f colorized -r no ${EXTRA_DIR}/docs/support;
+    fi
   - ${SBIN_DIR}/cprint.sh line cyan "Testing reStructuredText files"
-  - ${PYTESTCMD} --doctest-glob="*.rst" ${EXTRA_DIR}/docs
+  - if [ ${PYTESTCMD} --collect-only --doctest-glob="*.rst" ${EXTRA_DIR}/docs ]; then
+        ${PYTESTCMD} --doctest-glob="*.rst" ${EXTRA_DIR}/docs;
+    fi
   - ${SBIN_DIR}/cprint.sh line cyan "Testing docstrings"
   - ${PYTESTCMD} --doctest-modules ${SOURCE_DIR}
   # Coverage tests runs all the unit tests, no need to run the non-coverage
@@ -188,4 +193,12 @@ after_success:
         sed -r -i -e "s|${SOURCE_DIR}|${REPO_DIR}/${PKG_NAME}|g" coverage.xml;
         sed -r -i -e "s|${DOT_SOURCE_DIR}|${DOT_REPO_DIR}.${PKG_NAME}|g" coverage.xml;
         codecov --token=${CODECOV_TOKEN} --file=${REPO_DIR}/coverage.xml;
+    fi
+
+after_failure:
+  - ${SBIN_DIR}/zip-artifacts.sh ${INTERP}
+  - if [ -f "${AFILE}" ]; then
+        ${REPO_DIR}/sbin/dropbox_uploader.sh upload ${AFILE} .;
+    else
+        echo "Artifacts could not be exported";
     fi

@@ -19,6 +19,9 @@ environment:
     - JOB: "3.5"
       INTERP: "py35"
       PYVER: "3.5"
+    - JOB: "3.6"
+      INTERP: "py36"
+      PYVER: "3.6"
 
 init:
   - echo "PYVER=%PYVER%"
@@ -47,11 +50,12 @@ install:
 # Set up environment variables
 ###
 - set
-- set PKG_NAME=pcsv
 - set PYTHONCMD=python
 - set PIPCMD=pip
 - set PYTESTCMD=py.test
 - set REPO_DIR=%CD%
+- for %%i in (%REPO_DIR%) do @echo %%~ni> pkg_name.txt
+- set /p PKG_NAME=<pkg_name.txt
 - set RESULTS_DIR=%REPO_DIR%\results
 - set MAIN_REQUIREMENTS_FILE=%REPO_DIR%\requirements\main_%INTERP%.pip
 - set TESTS_REQUIREMENTS_FILE=%REPO_DIR%\requirements\tests_%INTERP%.pip
@@ -111,6 +115,7 @@ install:
 - set BIN_DIR=%VIRTUALENV_DIR%\Scripts
 - set SOURCE_DIR=%PYTHON_SITE_PACKAGES%\%PKG_NAME%
 - set EXTRA_DIR=%VIRTUALENV_DIR%\share\%PKG_NAME%
+- set SBIN_DIR=%EXTRA_DIR%\sbin
 - set PYTHONPATH=%PYTHONPATH%;%PYTHON_SITE_PACKAGES%;%EXTRA_DIR%;%EXTRA_DIR%\tests;%EXTRA_DIR%\docs;%EXTRA_DIR%\docs\support
 - set TRACER_DIR=%EXTRA_DIR%\docs\support
 - set COV_FILE=%SOURCE_DIR%\.coveragerc_ci_%INTERP%
@@ -119,6 +124,7 @@ install:
 - echo "BIN_DIR=%BINDIR%"
 - echo "SOURCE_DIR=%SOURCE_DIR%"
 - echo "EXTRA_DIR=%EXTRA_DIR%"
+- echo "SBIN_DIR=%SBIN_DIR%"
 - echo "PYTHONPATH=%PYTHONPATH%"
 - echo "TRACER_DIR=%TRACER_DIR%"
 - echo "COV_FILE=%COV_FILE%"
@@ -129,9 +135,9 @@ install:
 - set PYTHONPATH=%REPO_DIR%;%REPO_DIR%\sbin;%PYTHONPATH%
 - cd %REPO_DIR%
 - python %REPO_DIR%\sbin\gen_req_files.py freeze
-- pip install --upgrade -r%MAIN_REQUIREMENTS_FILE%
-- pip install --upgrade -r%TESTS_REQUIREMENTS_FILE%
-- pip install --upgrade -r%DOCS_REQUIREMENTS_FILE%
+- pip install -r%MAIN_REQUIREMENTS_FILE%
+- pip install -r%TESTS_REQUIREMENTS_FILE%
+- pip install -r%DOCS_REQUIREMENTS_FILE%
 - pip freeze
 ###
 # Create directories for reports and artifacts
@@ -162,9 +168,9 @@ build_script:
 ###
 # Write coverage configuration file
 ###
-- python %EXTRA_DIR%\sbin\coveragerc_manager.py 'ci' 1 %INTERP% %PYTHON_SITE_PACKAGES%
+- python %SBIN_DIR%\coveragerc_manager.py 'ci' 1 %INTERP% %PYTHON_SITE_PACKAGES%
 - type %COV_FILE%
-# - if "%INTERP%" == "py26" python %EXTRA_DIR%\sbin\patch_pylint.py %PYTHON_SITE_PACKAGES%
+# - if "%INTERP%" == "py26" python %SBIN_DIR%\patch_pylint.py %PYTHON_SITE_PACKAGES%
 ###
 # Change to tests sub-directory to mimic Tox conditions
 ###
@@ -175,12 +181,15 @@ test_script:
 # Run tests
 ###
 # Omitted tests are not Windows-specific and are handled by Travis-CI
-- python %EXTRA_DIR%\sbin\check_files_compliance.py -tps -d %SOURCE_DIR% -m %EXTRA_DIR%
-- pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %SOURCE_DIR%
-- pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %EXTRA_DIR%\sbin
-- pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %EXTRA_DIR%\tests
-- pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %EXTRA_DIR%\docs\support
-- py.test --doctest-glob="*.rst" %EXTRA_DIR%\docs
+- python %SBIN_DIR%\check_files_compliance.py -tps -d %SOURCE_DIR% -m %EXTRA_DIR%
+# pylint 1.6.x appears to have a bug in Python 3.6 that is only going to be fixed with Pylint 2.0
+- if not "%PYVER%"=="3.6" pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %SOURCE_DIR%
+- if not "%PYVER%"=="3.6" pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %SBIN_DIR%
+- if not "%PYVER%"=="3.6" pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %EXTRA_DIR%\tests
+- if not "%PYVER%"=="3.6" pylint --rcfile=%EXTRA_DIR%\.pylintrc -f colorized -r no %EXTRA_DIR%\docs\support
+- set DODOCTEST=1
+- py.test --collect-only --doctest-glob="*.rst" %EXTRA_DIR%\docs > doctest.log 2>&1 || set DODOCTEST=0
+- if %DODOCTEST%==1 py.test --doctest-glob="*.rst" %EXTRA_DIR%\docs
 - py.test --doctest-modules %SOURCE_DIR%
 # Coverage tests runs all the unit tests, no need to run the non-coverage
 # tests since the report is not being used
@@ -188,5 +197,5 @@ test_script:
 - py.test --cov-config %COV_FILE% --cov %SOURCE_DIR% --cov-report term
 # Re-building exceptions auto-documentation takes a long time in Appveyor.
 # They have (and should be) spot-checked every now and then
-# - python %EXTRA_DIR%\sbin\build_docs.py -r -t -d %SOURCE_DIR%
+# - python %SBIN_DIR%\build_docs.py -r -t -d %SOURCE_DIR%
 #[[[end]]]

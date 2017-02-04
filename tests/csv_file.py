@@ -50,7 +50,7 @@ class TestCsvFile(object):
     def test_init_exceptions(self):
         """ Test constructor exceptions """
         obj = pcsv.CsvFile
-        fname = os.path.join(SEP, 'file', 'does', 'not', 'exists.csv')
+        fname = os.path.join(SEP, 'not_a_file.csv')
         func_pointers = [
             (RE, 'File {0} is empty', write_file_empty),
             (

@@ -21,7 +21,7 @@ SUPPORTED_VERS = ['2.6', '2.7', '3.3', '3.4', '3.5', '3.6']
 ###
 # Functions
 ###
-# This function is copied from pcsv.compat2 and pcsv.compat3
+# This function is copied from pmisc.compat2 and pmisc.compat3
 # Repeated here so as make functions in this file self-contained
 if sys.hexversion < 0x03000000:
     def _readlines(fname):
@@ -41,7 +41,7 @@ else:
         except: # pragma: no cover
             raise
 
-# This function is copied from pcsv.compat2 and pcsv.compat3
+# This function is copied from pmisc.compat2 and pmisc.compat3
 # Repeated here so as make functions in this file self-contained
 if sys.hexversion < 0x03000000:
     # Largely from From https://stackoverflow.com/questions/956867/
@@ -159,7 +159,7 @@ def load_requirements(pkg_dir, pyver, cat='source'):
     elif cat.lower() == 'testing':
         reqs_files = [
             'tests_py{0}.pip'.format(pyver),
-            'docs.pip',
+            'docs_py{0}.pip'.format(pyver),
         ]
     else:
         raise RuntimeError('Unknown requirements category: {0}'.format(cat))
@@ -177,7 +177,7 @@ def load_requirements(pkg_dir, pyver, cat='source'):
 
 def pcolor(text, color, indent=0):
     """
-    Returns a string that once printed is colorized (copied from pmisc module)
+    Returns a string that once printed is colorized (copied from pmisc.strings)
     """
     esc_dict = {
         'black':30, 'red':31, 'green':32, 'yellow':33, 'blue':34, 'magenta':35,
