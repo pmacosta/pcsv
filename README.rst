@@ -455,9 +455,9 @@ Contributing
 
     * `Mock`_ (Python 2.x only, 1.0.1 or newer)
 
-    * `Pexdoc`_ (1.0.8 or newer)
+    * `Pexdoc`_ (1.0.9 or newer)
 
-    * `Pmisc`_ (1.2.1 or newer)
+    * `Pmisc`_ (1.2.2 or newer)
 
     * `Py.test`_ (2.7.0 or newer)
 
