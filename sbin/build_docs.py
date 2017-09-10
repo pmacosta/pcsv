@@ -2,7 +2,7 @@
 # build_docs.py
 # Copyright (c) 2013-2017 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0111,C0411,C0413,E0611,F0401,R0912,R0914,R0915,W0141
+# pylint: disable=C0111,C0411,C0413,C1801,E0611,F0401,R0912,R0914,R0915,W0141
 
 # Standard library imports
 from __future__ import print_function
@@ -191,8 +191,7 @@ def elapsed_time_string(start_time, stop_time):
         return ret_list[0]
     elif len(ret_list) == 2:
         return ret_list[0]+' and '+ret_list[1]
-    else:
-        return (', '.join(ret_list[0:-1]))+' and '+ret_list[-1]
+    return (', '.join(ret_list[0:-1]))+' and '+ret_list[-1]
 
 
 def insert_files_in_rsts(pkg_dir, cog_exe):

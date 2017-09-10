@@ -53,18 +53,19 @@ def concatenate(
     frow1=0, frow2=0,
     ofname=None, ocols=None):
     r"""
+    .. _NonNegativeInteger: http://pexdoc.readthedocs.io/en/stable/\\
+       ptypes.html#nonnegativeinteger
+
     Concatenates two comma-separated values file. Data rows from the second
     file are appended at the end of the data rows from the first file
 
     :param fname1: Name of the first comma-separated values file, the file
                    whose data appears first in the output file
-    :type  fname1: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filenameexists>`_
+    :type  fname1: FileNameExists_
 
     :param fname2: Name of the second comma-separated values file, the file
                    whose data appears last in the output file
-    :type  fname2: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filenameexists>`_
+    :type  fname2: FileNameExists_
 
     :param dfilter1: Row and/or column filter for the first file. If None no
                      data filtering is done on the file
@@ -88,21 +89,18 @@ def concatenate(
                   from 1). If 0 the row where data starts is auto-detected as
                   the first row that has a number (integer of float) in at
                   least one of its columns
-    :type  frow1: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#nonnegativeinteger>`_
+    :type  frow1: NonNegativeInteger_
 
     :param frow2: Second comma-separated values file first data row (starting
                   from 1). If 0 the row where data starts is auto-detected as
                   the first row that has a number (integer of float) in at
                   least one of its columns
-    :type  frow2: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#nonnegativeinteger>`_
+    :type  frow2: NonNegativeInteger_
 
     :param ofname: Name of the output comma-separated values file, the file
                    that will contain the data from the first and second files.
                    If None the first file is replaced "in place"
-    :type  ofname: FileName <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filename>`_ or None
+    :type  ofname: FileName_ or None
 
     :param ocols: Column names of the output comma-separated values file.
                   If None the column names in the first file are used if

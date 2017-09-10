@@ -60,13 +60,11 @@ def replace(
 
     :param fname1: Name of the input comma-separated values file, the file
                    that contains the columns to be replaced
-    :type  fname1: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filenameexists>`_
+    :type  fname1: FileNameExists_
 
     :param fname2: Name of the replacement comma-separated values file, the
                    file that contains the replacement data
-    :type  fname2: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filenameexists>`_
+    :type  fname2: FileNameExists_
 
     :param dfilter1: Row and/or column filter for the input file
     :type  dfilter1: :ref:`CsvDataFilter`
@@ -88,22 +86,21 @@ def replace(
                   from 1). If 0 the row where data starts is auto-detected as
                   the first row that has a number (integer of float) in at
                   least one of its columns
-    :type  frow1: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#nonnegativeinteger>`_
+    :type  frow1: NonNegativeInteger_
 
     :param frow2: Replacement comma-separated values file first data row
                   (starting from 1). If 0 the row where data starts is
                   auto-detected as the first row that has a number (integer of
                   float) in at least one of its columns
-    :type  frow2: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#nonnegativeinteger>`_
+
+    :type  frow2: NonNegativeInteger_
 
     :param ofname: Name of the output comma-separated values file, the file
                    that will contain the input file data but with some columns
                    replaced with data from the replacement file. If None the
                    input file is replaced "in place"
-    :type  ofname: FileName <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filename>`_ or None
+    :type  ofname: `FileName <http://pexdoc.readthedocs.io/en/stable/\\
+                   ptypes.html#filename>`_
 
     :param ocols: Names of the replaced columns in the output comma-separated
                   values file. If None the column names in the input file are

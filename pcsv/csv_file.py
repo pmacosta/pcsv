@@ -56,8 +56,8 @@ def _homogenize_data_filter(dfilter):
         dfilter = (None, None)
     elif isinstance(dfilter, dict):
         dfilter = (dfilter, None)
-    elif (isinstance(dfilter, str) or (isinstance(dfilter, int) and
-         (not isinstance(dfilter, bool))) or isinstance(dfilter, list)):
+    elif (isinstance(dfilter, (list, str)) or (isinstance(dfilter, int) and
+         (not isinstance(dfilter, bool)))):
         dfilter = (None, dfilter if isinstance(dfilter, list) else [dfilter])
     elif (isinstance(dfilter[0], dict) or ((dfilter[0] is None) and
          (not isinstance(dfilter[1], dict)))):
@@ -88,7 +88,7 @@ class CsvFile(object):
     Processes comma-separated values (CSV) files
 
     :param fname: Name of the comma-separated values file to read
-    :type  fname: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
+    :type  fname: `FileNameExists <http://pexdoc.readthedocs.io/en/stable/\\
                   ptypes.html#filenameexists>`_
 
     :param dfilter: Row and/or column filter. If None no data filtering is
@@ -103,8 +103,7 @@ class CsvFile(object):
     :param frow: First data row (starting from 1). If 0 the row where data
                  starts is auto-detected as the first row that has a number
                  (integer of float) in at least one of its columns
-    :type  frow: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                 ptypes.html#nonnegativeinteger>`_
+    :type  frow: `NonNegativeInteger`_
 
     :rtype: :py:class:`pcsv.CsvFile` object
 
@@ -140,6 +139,7 @@ class CsvFile(object):
         fname='file_name_exists'
     )
     def __init__(self, fname, dfilter=None, has_header=True, frow=0):
+        # pylint: disable=C1801
         self._header = None
         self._header_upper = None
         self._data = None
@@ -371,6 +371,7 @@ class CsvFile(object):
 
     def _in_header(self, col):
         """ Validate column identifier(s) """
+        # pylint: disable=R1704
         if not self._has_header:
             # Conditionally register exceptions so that they do not appear
             # in situations where has_header is always True. In this way
@@ -381,11 +382,7 @@ class CsvFile(object):
         hnf_ex = pexdoc.exh.addex(
             ValueError, 'Column *[column_identifier]* not found'
         )
-        col_list = (
-            [col]
-            if isinstance(col, str) or isinstance(col, int) else
-            col
-        )
+        col_list = [col] if isinstance(col, (str, int)) else col
         for col in col_list:
             edata = {'field':'column_identifier', 'value':col}
             if not self._has_header:
@@ -477,7 +474,7 @@ class CsvFile(object):
             df_tuples = self._format_rfilter(self._rfilter)
             self._fdata = [
                 row for row in self._data
-                if all([row[col_num] in col_value
+                if all([(len(row) > col_num) and (row[col_num] in col_value)
                 for col_num, col_value in df_tuples])
             ]
         if self._cfilter and (ftype in clist):
@@ -821,7 +818,7 @@ class CsvFile(object):
         :param fname: Name of the comma-separated values file to be
                       written. If None the file from which the data originated
                       is overwritten
-        :type  fname: FileName <http://pexdoc.readthedocs.io/en/stable/
+        :type  fname: `FileName <http://pexdoc.readthedocs.io/en/stable/\\
                       ptypes.html#filename>`_
 
         :param filtered: Filtering type

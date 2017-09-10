@@ -27,6 +27,7 @@ from tests.fixtures import (
     write_empty_cols,
     write_file,
     write_file_empty,
+    write_file_missing,
     write_no_data,
     write_no_header_file,
     write_sort_file,
@@ -855,6 +856,11 @@ class TestCsvFile(object):
             assert obj.data(filtered=True) == [[3, 6, 9]]
             obj.rfilter = {0:1, 2:6}
             assert obj.data(filtered=True) == [[1, 6, 6]]
+        with pmisc.TmpFile(write_file_missing) as fname:
+            obj = pcsv.CsvFile(fname=fname)
+        assert obj.dfilter == (None, None)
+        obj.rfilter = {'Result':[10, 40]}
+        assert obj.data(filtered=True) == [[1, 3, 10], [2, 5, 40]]
 
     @pytest.mark.csv_file
     @pytest.mark.parametrize(

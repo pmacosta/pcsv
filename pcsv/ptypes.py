@@ -1,7 +1,7 @@
 # ptypes.py
 # Copyright (c) 2013-2017 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0111,R0916
+# pylint: disable=C0111,C1801,R0916
 
 # PyPI imports
 import pexdoc.pcontracts
@@ -22,9 +22,9 @@ _SUFFIX_TUPLE = (
 ###
 def _check_csv_col_filter(obj):
     if (not isinstance(obj, bool)) and ((obj is None) or
-       isinstance(obj, str) or isinstance(obj, int) or
+       isinstance(obj, (str, int)) or
        (isinstance(obj, list) and (len(obj) > 0) and
-       all([(isinstance(item, str) or isinstance(item, int)) and
+       all([(isinstance(item, (str, int))) and
        (not isinstance(item, bool)) for item in obj]))):
         return False
     return True
@@ -40,7 +40,7 @@ def _check_csv_row_filter(obj):
         return 2
     if any(
             [
-                not (isinstance(col_name, str) or isinstance(col_name, int))
+                not (isinstance(col_name, (str, int)))
                 for col_name in obj.keys()
             ]
     ):
@@ -76,8 +76,8 @@ def _homogenize_data_filter(dfilter):
         dfilter = (dfilter[0], None)
     elif isinstance(dfilter, dict):
         dfilter = (dfilter, None)
-    elif (isinstance(dfilter, str) or (isinstance(dfilter, int) and
-         (not isinstance(dfilter, bool))) or isinstance(dfilter, list)):
+    elif (isinstance(dfilter, (list, str)) or (isinstance(dfilter, int) and
+         (not isinstance(dfilter, bool)))):
         dfilter = (None, dfilter if isinstance(dfilter, list) else [dfilter])
     elif (isinstance(dfilter[0], dict) or ((dfilter[0] is None) and
          (not isinstance(dfilter[1], dict)))):
@@ -95,9 +95,7 @@ def _isnumber(obj):
     return (
         (((obj is not None) and
         (not isinstance(obj, bool)) and
-        (isinstance(obj, int) or
-        isinstance(obj, float) or
-        isinstance(obj, complex))))
+        isinstance(obj, (int, float, complex))))
     )
 @pexdoc.pcontracts.new_contract()
 def csv_col_filter(obj):

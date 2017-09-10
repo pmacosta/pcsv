@@ -66,8 +66,7 @@ def write(fname, data, append=True):
     Writes data to a specified comma-separated values (CSV) file
 
     :param fname: Name of the comma-separated values file to be written
-    :type  fname: FileName <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#filename>`_
+    :type  fname: FileName_
 
     :param data: Data to write to the file. Each item in this argument
                  should contain a sub-list corresponding to a row of data;

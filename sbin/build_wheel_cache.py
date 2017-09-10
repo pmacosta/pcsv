@@ -2,7 +2,7 @@
 # build_wheel_cache.py
 # Copyright (c) 2013-2017 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0111
+# pylint: disable=C0111,C1801
 
 # Standard library imports
 from __future__ import print_function

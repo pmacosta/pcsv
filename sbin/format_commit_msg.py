@@ -2,7 +2,7 @@
 # format_commit_msg.py
 # Copyright (c) 2013-2017 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0111,E1101,E1103,F0401,W0212
+# pylint: disable=C0111,C1801,E1101,E1103,F0401,W0212
 
 # Standard library imports
 from __future__ import print_function

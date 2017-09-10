@@ -155,6 +155,21 @@ def write_file_empty(file_handle):
     write_array(file_handle, '')
 
 
+def write_file_missing(file_handle):
+    lines = [
+        'Ctrl,Ref,Result',
+        '1,3,10',
+        '1,4,20',
+        '2,4',
+        '2,5,40',
+        ',',
+        '3,5,50',
+        ',',
+        '',
+    ]
+    write_array(file_handle, lines)
+
+
 def write_input_file(file_handle):
     lines = [
         'Ctrl,Ref,Data1,Data2',

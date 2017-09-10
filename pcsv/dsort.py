@@ -42,8 +42,7 @@ def dsort(
     Sorts file data
 
     :param fname: Name of the comma-separated values file to sort
-    :type  fname: FileNameExists <http://pexdoc.readthedocs.io/en/stable/
-                  ptypes.html#filenameexists>`_
+    :type  fname: FileNameExists_
 
     :param order: Sort order
     :type  order: :ref:`CsvColFilter`
@@ -56,14 +55,12 @@ def dsort(
     :param frow: First data row (starting from 1). If 0 the row where data
                  starts is auto-detected as the first row that has a number
                  (integer of float) in at least one of its columns
-    :type  frow: `NonNegativeInteger <http://pexdoc.readthedocs.io/en/stable/
-                 ptypes.html#nonnegativeinteger>`_
+    :type  frow: NonNegativeInteger_
 
     :param ofname: Name of the output comma-separated values file, the file
                    that will contain the sorted data. If None the sorting is
                    done "in place"
-    :type  ofname: FileName <http://pexdoc.readthedocs.io/en/stable/
-                   ptypes.html#filename>`_ or None
+    :type  ofname: FileName_ or None
 
     .. [[[cog cog.out(exobj.get_sphinx_autodoc(raised=True)) ]]]
     .. Auto-generated exceptions documentation for pcsv.dsort.dsort
