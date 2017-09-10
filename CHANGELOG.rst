@@ -5,6 +5,9 @@
 Changelog
 =========
 
+* 1.0.6 [2017-09-10]: Fixed bug while filtering rows that have empty column
+  specified in filter. Fixed broken multi-line links in documentation
+
 * 1.0.5 [2017-02-10]: Package build enhancements and fixes
 
 * 1.0.4 [2017-02-07]: Python 3.6 support
