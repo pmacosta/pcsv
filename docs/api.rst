@@ -2,6 +2,13 @@
 .. Copyright (c) 2013-2017 Pablo Acosta-Serafini
 .. See LICENSE for details
 
+.. _NonNegativeInteger:
+   http://pexdoc.readthedocs.io/en/stable/ptypes.html#nonnegativeinteger
+.. _FileName:
+   http://pexdoc.readthedocs.io/en/stable/ptypes.html#filename
+.. _FileNameExists:
+   http://pexdoc.readthedocs.io/en/stable/ptypes.html#filenameexists
+
 ###
 API
 ###

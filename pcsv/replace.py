@@ -99,8 +99,7 @@ def replace(
                    that will contain the input file data but with some columns
                    replaced with data from the replacement file. If None the
                    input file is replaced "in place"
-    :type  ofname: `FileName <http://pexdoc.readthedocs.io/en/stable/\\
-                   ptypes.html#filename>`_
+    :type  ofname: FileName_
 
     :param ocols: Names of the replaced columns in the output comma-separated
                   values file. If None the column names in the input file are

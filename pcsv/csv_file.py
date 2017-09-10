@@ -88,8 +88,7 @@ class CsvFile(object):
     Processes comma-separated values (CSV) files
 
     :param fname: Name of the comma-separated values file to read
-    :type  fname: `FileNameExists <http://pexdoc.readthedocs.io/en/stable/\\
-                  ptypes.html#filenameexists>`_
+    :type  fname: FileNameExists_
 
     :param dfilter: Row and/or column filter. If None no data filtering is
                     done
@@ -818,8 +817,7 @@ class CsvFile(object):
         :param fname: Name of the comma-separated values file to be
                       written. If None the file from which the data originated
                       is overwritten
-        :type  fname: `FileName <http://pexdoc.readthedocs.io/en/stable/\\
-                      ptypes.html#filename>`_
+        :type  fname: FileName_
 
         :param filtered: Filtering type
         :type  filtered: :ref:`CsvFiltered`

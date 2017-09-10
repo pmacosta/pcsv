@@ -53,9 +53,6 @@ def concatenate(
     frow1=0, frow2=0,
     ofname=None, ocols=None):
     r"""
-    .. _NonNegativeInteger: http://pexdoc.readthedocs.io/en/stable/\\
-       ptypes.html#nonnegativeinteger
-
     Concatenates two comma-separated values file. Data rows from the second
     file are appended at the end of the data rows from the first file
 
