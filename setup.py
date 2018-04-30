@@ -1,5 +1,5 @@
 # setup.py
-# Copyright (c) 2013-2017 Pablo Acosta-Serafini
+# Copyright (c) 2013-2018 Pablo Acosta-Serafini
 # See LICENSE for details
 # pylint: disable=C0111,E1111,R0904,W0122,W0201,W0621
 
@@ -43,14 +43,16 @@ def get_short_desc(long_desc):
     """ Get first sentence of first paragraph of long description """
     found = False
     olines = []
+    ret = None
     for line in [item.rstrip() for item in long_desc.split('\n')]:
         if (found and (((not line) and (not olines))
            or (line and olines))):
             olines.append(line)
         elif found and olines and (not line):
-            return (' '.join(olines).split('.')[0]).strip()
+            ret = (' '.join(olines).split('.')[0]).strip()
+            break
         found = line == '.. [[[end]]]' if not found else found
-
+    return ret
 
 def read(*filenames, **kwargs):
     """ Read plain text file(s) """
