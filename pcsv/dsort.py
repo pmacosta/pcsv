@@ -1,21 +1,6 @@
-# dsort.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
-# See LICENSE for details
-# pylint: disable=C0111,W0105,W0611
-
-# PyPI imports
-import pexdoc.pcontracts
-from pexdoc.ptypes import file_name_exists, non_negative_integer
-# Intra-package imports
-from .ptypes import csv_col_sort
-from .csv_file import CsvFile
-from .write import write
-
-
-###
-# Exception tracing initialization code
-###
 """
+Sort file data.
+
 [[[cog
 import os, sys
 sys.path.append(os.environ['TRACER_DIR'])
@@ -24,22 +9,34 @@ exobj = trace_ex_pcsv_dsort.trace_module(no_print=True)
 ]]]
 [[[end]]]
 """
+# dsort.py
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
+# See LICENSE for details
+# pylint: disable=C0111,W0105,W0611
+
+# PyPI imports
+import pexdoc.pcontracts
+from pexdoc.ptypes import file_name_exists, non_negative_integer
+
+# Intra-package imports
+from .ptypes import csv_col_sort
+from .csv_file import CsvFile
+from .write import write
 
 
 ###
 # Functions
 ###
 @pexdoc.pcontracts.contract(
-    fname='file_name_exists',
-    order='csv_col_sort',
+    fname="file_name_exists",
+    order="csv_col_sort",
     has_header=bool,
-    frow='non_negative_integer',
-    ofname='None|file_name',
+    frow="non_negative_integer",
+    ofname="None|file_name",
 )
-def dsort(
-    fname, order, has_header=True, frow=0, ofname=None):
+def dsort(fname, order, has_header=True, frow=0, ofname=None):
     r"""
-    Sorts file data
+    Sort file data.
 
     :param fname: Name of the comma-separated values file to sort
     :type  fname: FileNameExists_

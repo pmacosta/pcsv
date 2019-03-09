@@ -1,36 +1,6 @@
-# csv_file.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
-# See LICENSE for details
-# pylint: disable=C0111,R0201,W0105,W0611
-
-# Standard library imports
-import csv
-import operator
-import os
-import platform
-import sys
-# PyPI imports
-import pmisc
-import pexdoc.exh
-import pexdoc.pcontracts
-from pexdoc.ptypes import (
-    file_name,
-    file_name_exists,
-    non_negative_integer
-)
-# Intra-package imports
-from .ptypes import (
-    csv_col_filter,
-    csv_filtered,
-    csv_row_filter,
-)
-from .write import _write_int
-
-
-###
-# Exception tracing initialization code
-###
 """
+Define main CSV-handling class.
+
 [[[cog
 import os, sys
 sys.path.append(os.environ['TRACER_DIR'])
@@ -39,6 +9,27 @@ exobj = trace_ex_pcsv_csv_file.trace_module(no_print=True)
 ]]]
 [[[end]]]
 """
+# csv_file.py
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
+# See LICENSE for details
+# pylint: disable=C0111,R0201,R0205,W0105,W0611
+
+# Standard library imports
+import csv
+import operator
+import os
+import platform
+import sys
+
+# PyPI imports
+import pmisc
+import pexdoc.exh
+import pexdoc.pcontracts
+from pexdoc.ptypes import file_name, file_name_exists, non_negative_integer
+
+# Intra-package imports
+from .ptypes import csv_col_filter, csv_filtered, csv_row_filter
+from .write import _write_int
 
 
 ###
@@ -46,21 +37,24 @@ exobj = trace_ex_pcsv_csv_file.trace_module(no_print=True)
 ###
 def _homogenize_data_filter(dfilter):
     """
-    Make data filter definition consistent, create a
-    tuple where first element is the row filter and
-    the second element is the column filter
+    Make data filter definition consistent.
+
+    Create a tuple where first element is the row filter and the second element
+    is the column filter
     """
     if isinstance(dfilter, tuple) and (len(dfilter) == 1):
         dfilter = (dfilter[0], None)
-    if (dfilter is None) or (dfilter == (None, None)) or (dfilter == (None, )):
+    if (dfilter is None) or (dfilter == (None, None)) or (dfilter == (None,)):
         dfilter = (None, None)
     elif isinstance(dfilter, dict):
         dfilter = (dfilter, None)
-    elif (isinstance(dfilter, (list, str)) or (isinstance(dfilter, int) and
-         (not isinstance(dfilter, bool)))):
+    elif isinstance(dfilter, (list, str)) or (
+        isinstance(dfilter, int) and (not isinstance(dfilter, bool))
+    ):
         dfilter = (None, dfilter if isinstance(dfilter, list) else [dfilter])
-    elif (isinstance(dfilter[0], dict) or ((dfilter[0] is None) and
-         (not isinstance(dfilter[1], dict)))):
+    elif isinstance(dfilter[0], dict) or (
+        (dfilter[0] is None) and (not isinstance(dfilter[1], dict))
+    ):
         pass
     else:
         dfilter = (dfilter[1], dfilter[0])
@@ -68,8 +62,8 @@ def _homogenize_data_filter(dfilter):
 
 
 def _tofloat(obj):
-    """ Convert to float if object is a float string """
-    if 'inf' in obj.lower().strip():
+    """Convert to float if object is a float string."""
+    if "inf" in obj.lower().strip():
         return obj
     try:
         return int(obj)
@@ -85,7 +79,7 @@ def _tofloat(obj):
 ###
 class CsvFile(object):
     r"""
-    Processes comma-separated values (CSV) files
+    Process comma-separated values (CSV) files.
 
     :param fname: Name of the comma-separated values file to read
     :type  fname: FileNameExists_
@@ -133,11 +127,10 @@ class CsvFile(object):
 
     .. [[[end]]]
     """
+
     # pylint: disable=R0902,W0631
-    @pexdoc.pcontracts.contract(
-        fname='file_name_exists'
-    )
-    def __init__(self, fname, dfilter=None, has_header=True, frow=0):
+    @pexdoc.pcontracts.contract(fname="file_name_exists")
+    def __init__(self, fname, dfilter=None, has_header=True, frow=0):  # noqa: D107
         # pylint: disable=C1801
         self._header = None
         self._header_upper = None
@@ -154,30 +147,28 @@ class CsvFile(object):
         self._fdata_cols = None
         self._set_has_header(has_header)
         # Register exceptions
-        empty_exobj = pexdoc.exh.addex(RuntimeError, 'File *[fname]* is empty')
+        empty_exobj = pexdoc.exh.addex(RuntimeError, "File *[fname]* is empty")
         col_exobj = pexdoc.exh.addex(
-            RuntimeError, 'Column headers are not unique in file *[fname]*'
+            RuntimeError, "Column headers are not unique in file *[fname]*"
         )
         nvdata_exobj = pexdoc.exh.addex(
-            RuntimeError, 'File *[fname]* has no valid data'
+            RuntimeError, "File *[fname]* has no valid data"
         )
-        edata = {'field':'fname', 'value':self._fname}
+        edata = {"field": "fname", "value": self._fname}
         # Read data
-        if sys.hexversion < 0x03000000: # pragma: no cover, no branch
+        if sys.hexversion < 0x03000000:  # pragma: no cover, no branch
             fname = pmisc.normalize_windows_fname(fname)
-            with open(fname, 'r') as file_handle:
+            with open(fname, "r") as file_handle:
                 self._raw_data = [row for row in csv.reader(file_handle)]
-        else: # pragma: no cover, no branch
-            with open(fname, 'r', newline='') as file_handle:
+        else:  # pragma: no cover, no branch
+            with open(fname, "r", newline="") as file_handle:
                 self._raw_data = [row for row in csv.reader(file_handle)]
         # Process header
         empty_exobj(not len(self._raw_data), edata)
         if has_header:
             self._header = self._raw_data[0]
             self._header_upper = [col.upper() for col in self._header]
-            col_exobj(
-                len(set(self._header_upper)) != len(self._header_upper), edata
-            )
+            col_exobj(len(set(self._header_upper)) != len(self._header_upper), edata)
         else:
             self._header = list(range(0, len(self._raw_data[0])))
             self._header_upper = self._header
@@ -185,21 +176,18 @@ class CsvFile(object):
         if frow == 0:
             # Find start of data row. A data row is defined as one that has at
             # least one column with a number
-            for num, row in enumerate(self._raw_data[1 if has_header else 0:]):
+            for num, row in enumerate(self._raw_data[1 if has_header else 0 :]):
                 if any([pmisc.isnumber(_tofloat(col)) for col in row]):
                     break
             else:
                 nvdata_exobj(True, edata)
         else:
             nvdata_exobj(frow > len(self._raw_data), edata)
-            num = frow-(2 if has_header else 1)
+            num = frow - (2 if has_header else 1)
         # Set up class properties
         self._data = [
-            [
-                None if col.strip() == '' else _tofloat(col)
-                for col in row
-            ]
-            for row in self._raw_data[num+(1 if has_header else 0):]
+            [None if col.strip() == "" else _tofloat(col) for col in row]
+            for row in self._raw_data[num + (1 if has_header else 0) :]
         ]
         self._data_cols = len(self._header)
         self._data_rows = len(self._data)
@@ -211,7 +199,9 @@ class CsvFile(object):
 
     def __eq__(self, other):
         """
-        Tests object equality. For example:
+        Test object equality.
+
+        For example:
 
             >>> import pmisc, pcsv
             >>> with pmisc.TmpFile() as fname:
@@ -240,13 +230,14 @@ class CsvFile(object):
                 sfname == ofname,
                 self._rfilter == other._rfilter,
                 self._cfilter == other._cfilter,
-                self._has_header == other._has_header
+                self._has_header == other._has_header,
             ]
         )
 
     def __repr__(self):
         """
-        Returns a string with the expression needed to re-create the object.
+        Return a string with the expression needed to re-create the object.
+
         For example:
 
             >>> import pmisc, pcsv
@@ -260,10 +251,13 @@ class CsvFile(object):
             "pcsv.CsvFile(fname=r'...', dfilter=['a'])"
         """
         dfilter_list = (
-            None, self._cfilter, self._rfilter, (self._rfilter, self._cfilter)
+            None,
+            self._cfilter,
+            self._rfilter,
+            (self._rfilter, self._cfilter),
         )
         dfilter = dfilter_list[
-            2*(self._rfilter is not None)+(self._cfilter is not None)
+            2 * (self._rfilter is not None) + (self._cfilter is not None)
         ]
         has_header = self._has_header
         ret = [
@@ -275,12 +269,12 @@ class CsvFile(object):
             ret.append("dfilter={0}".format(dfilter))
         if not has_header:
             ret.append("has_header={0}".format(has_header))
-        return ", ".join(ret)+")"
-
+        return ", ".join(ret) + ")"
 
     def __str__(self):
         """
-        Returns a string with a detailed description of the object's contents.
+        Return a string with a detailed description of the object's contents.
+
         For example:
 
             >>> from __future__ import print_function
@@ -297,57 +291,59 @@ class CsvFile(object):
             Rows: 2
             Columns: 2 (1 filtered)
         """
-        ret = ['File: {0}'.format(self._fname)]
-        ret += ['Header: {0}'.format(self._header)]
-        ret += ['Row filter: {0}'.format(self._rfilter)]
-        ret += ['Column filter: {0}'.format(self._cfilter)]
+        ret = ["File: {0}".format(self._fname)]
+        ret += ["Header: {0}".format(self._header)]
+        ret += ["Row filter: {0}".format(self._rfilter)]
+        ret += ["Column filter: {0}".format(self._cfilter)]
         ret += [
-            'Rows: {rrows}{urows}'.format(
+            "Rows: {rrows}{urows}".format(
                 rrows=self._data_rows,
                 urows=(
-                    ' ({rows} filtered)'.format(rows=self._fdata_rows)
-                    if self._rfilter is not None else
-                    ''
-                )
+                    " ({rows} filtered)".format(rows=self._fdata_rows)
+                    if self._rfilter is not None
+                    else ""
+                ),
             )
         ]
         ret += [
-            'Columns: {rcols}{ucols}'.format(
+            "Columns: {rcols}{ucols}".format(
                 rcols=self._data_cols,
                 ucols=(
-                    ' ({cols} filtered)'.format(cols=self._fdata_cols)
-                    if self._cfilter is not None else
-                    ''
-                )
+                    " ({cols} filtered)".format(cols=self._fdata_cols)
+                    if self._cfilter is not None
+                    else ""
+                ),
             )
         ]
-        return '\n'.join(ret)
+        return "\n".join(ret)
 
     def _format_rfilter(self, rfilter):
-        return [
-            (
+        return (
+            [
                 (
-                    self._header_upper.index(key.upper())
-                    if isinstance(key, str) else
-                    key
-                ),
-                (
-                    [value]
-                    if not pmisc.isiterable(value) else
-                    [item for item in value]
+                    (
+                        self._header_upper.index(key.upper())
+                        if isinstance(key, str)
+                        else key
+                    ),
+                    (
+                        [value]
+                        if not pmisc.isiterable(value)
+                        else [item for item in value]
+                    ),
                 )
-            )
-            for key, value in rfilter.items()
-        ] if rfilter else []
+                for key, value in rfilter.items()
+            ]
+            if rfilter
+            else []
+        )
 
     def _gen_col_index(self, filtered=True):
         col_index_list = []
-        if self._cfilter and (filtered in [True, 'B', 'b', 'C', 'c']):
+        if self._cfilter and (filtered in [True, "B", "b", "C", "c"]):
             for col in self._cfilter:
                 if isinstance(col, str):
-                    col_index_list.append(
-                        self._header_upper.index(col.upper())
-                    )
+                    col_index_list.append(self._header_upper.index(col.upper()))
                 else:
                     col_index_list.append(col)
             return col_index_list
@@ -363,60 +359,56 @@ class CsvFile(object):
         return self._rfilter
 
     def _reset_dfilter_int(self, ftype=True):
-        if ftype in [True, 'B', 'b', 'R', 'r']:
+        if ftype in [True, "B", "b", "R", "r"]:
             self._rfilter = None
-        if ftype in [True, 'B', 'b', 'C', 'c']:
+        if ftype in [True, "B", "b", "C", "c"]:
             self._cfilter = None
 
     def _in_header(self, col):
-        """ Validate column identifier(s) """
+        """Validate column identifier(s)."""
         # pylint: disable=R1704
         if not self._has_header:
             # Conditionally register exceptions so that they do not appear
             # in situations where has_header is always True. In this way
             # they are not auto-documented by default
-            icol_ex = pexdoc.exh.addex(
-                RuntimeError, 'Invalid column specification'
-            )
-        hnf_ex = pexdoc.exh.addex(
-            ValueError, 'Column *[column_identifier]* not found'
-        )
+            icol_ex = pexdoc.exh.addex(RuntimeError, "Invalid column specification")
+        hnf_ex = pexdoc.exh.addex(ValueError, "Column *[column_identifier]* not found")
         col_list = [col] if isinstance(col, (str, int)) else col
         for col in col_list:
-            edata = {'field':'column_identifier', 'value':col}
+            edata = {"field": "column_identifier", "value": col}
             if not self._has_header:
                 # Condition not subsumed in raise_exception_if
                 # so that calls that always have has_header=True
                 # do not pick up this exception
                 icol_ex(not isinstance(col, int))
-                hnf_ex((col < 0) or (col > len(self._header)-1), edata)
+                hnf_ex((col < 0) or (col > len(self._header) - 1), edata)
             else:
                 hnf_ex(
-                    (isinstance(col, int) and
-                    ((col < 0) or (col > self._data_cols))) or
-                    (isinstance(col, str) and
-                    (col.upper() not in self._header_upper)),
-                    edata
+                    (isinstance(col, int) and ((col < 0) or (col > self._data_cols)))
+                    or (
+                        isinstance(col, str) and (col.upper() not in self._header_upper)
+                    ),
+                    edata,
                 )
         return col_list
 
-    @pexdoc.pcontracts.contract(cfilter='csv_col_filter')
+    @pexdoc.pcontracts.contract(cfilter="csv_col_filter")
     def _set_cfilter(self, cfilter):
-        self._reset_dfilter_int('C')
+        self._reset_dfilter_int("C")
         self._add_dfilter_int(cfilter)
 
-    @pexdoc.pcontracts.contract(dfilter='csv_data_filter')
+    @pexdoc.pcontracts.contract(dfilter="csv_data_filter")
     def _set_dfilter(self, dfilter):
         dfilter = _homogenize_data_filter(dfilter)
         self._reset_dfilter_int()
         self._add_dfilter_int(dfilter)
 
-    @pexdoc.pcontracts.contract(rfilter='csv_row_filter')
+    @pexdoc.pcontracts.contract(rfilter="csv_row_filter")
     def _set_rfilter(self, rfilter):
-        self._reset_dfilter_int('R')
-        self._add_dfilter_int(rfilter, letter='r')
+        self._reset_dfilter_int("R")
+        self._add_dfilter_int(rfilter, letter="r")
 
-    def _add_dfilter_int(self, dfilter, letter='d'):
+    def _add_dfilter_int(self, dfilter, letter="d"):
         rfilter, cfilter = _homogenize_data_filter(dfilter)
         if cfilter is not None:
             cfilter = self._in_header(cfilter)
@@ -424,14 +416,12 @@ class CsvFile(object):
                 self._cfilter = []
             self._cfilter.append(cfilter)
             cfilter = pmisc.flatten_list(self._cfilter)
-            col_indexes = (
-                [
-                    item
-                    if isinstance(item, int) else
-                    self._header_upper.index(item.upper())
-                    for item in cfilter
-                ]
-            )
+            col_indexes = [
+                item
+                if isinstance(item, int)
+                else self._header_upper.index(item.upper())
+                for item in cfilter
+            ]
             self._cfilter = [self._header[item] for item in col_indexes]
             self._fdata_cols = len(cfilter)
         if rfilter is not None:
@@ -444,37 +434,39 @@ class CsvFile(object):
                         set(
                             (
                                 self._rfilter[key]
-                                if isinstance(self._rfilter[key], list) else
-                                [self._rfilter[key]]
+                                if isinstance(self._rfilter[key], list)
+                                else [self._rfilter[key]]
                             )
-                            +
-                            (
+                            + (
                                 rfilter[key]
-                                if isinstance(rfilter[key], list) else
-                                [rfilter[key]]
+                                if isinstance(rfilter[key], list)
+                                else [rfilter[key]]
                             )
                         )
                     )
                 else:
                     self._rfilter[key] = rfilter[key]
-            self._fdata_rows = len(self._apply_filter('R'))
+            self._fdata_rows = len(self._apply_filter("R"))
 
     def _apply_filter(self, ftype, no_empty=False):
         # pylint: disable=W0141
-        rlist = [True, 'B', 'b', 'R', 'r']
-        clist = [True, 'B', 'b', 'C', 'c']
+        rlist = [True, "B", "b", "R", "r"]
+        clist = [True, "B", "b", "C", "c"]
         apply_filter = (
-            self._rfilter and (ftype in rlist)
-            or
-            self._cfilter and (ftype in clist)
+            self._rfilter and (ftype in rlist) or self._cfilter and (ftype in clist)
         )
         if self._rfilter and (ftype in rlist):
             # Row filter
             df_tuples = self._format_rfilter(self._rfilter)
             self._fdata = [
-                row for row in self._data
-                if all([(len(row) > col_num) and (row[col_num] in col_value)
-                for col_num, col_value in df_tuples])
+                row
+                for row in self._data
+                if all(
+                    [
+                        (len(row) > col_num) and (row[col_num] in col_value)
+                        for col_num, col_value in df_tuples
+                    ]
+                )
             ]
         if self._cfilter and (ftype in clist):
             # Column filter
@@ -483,9 +475,7 @@ class CsvFile(object):
             self._fdata = [
                 [row[index] for index in col_index_list]
                 for row in (
-                    self._fdata
-                    if self._rfilter and (ftype in rlist) else
-                    self._data
+                    self._fdata if self._rfilter and (ftype in rlist) else self._data
                 )
             ]
         data = self._fdata if apply_filter else self._data
@@ -497,49 +487,40 @@ class CsvFile(object):
         self._has_header = has_header
 
     def _validate_frow(self, frow):
-        """ Validate frow argument """
+        """Validate frow argument."""
         is_int = isinstance(frow, int) and (not isinstance(frow, bool))
-        pexdoc.exh.addai('frow', not (is_int and (frow >= 0)))
+        pexdoc.exh.addai("frow", not (is_int and (frow >= 0)))
         return frow
 
-    def _validate_rfilter(self, rfilter, letter='d'):
-        """ Validate that all columns in filter are in header """
-        if letter == 'd':
+    def _validate_rfilter(self, rfilter, letter="d"):
+        """Validate that all columns in filter are in header."""
+        if letter == "d":
             pexdoc.exh.addai(
-                'dfilter', (
+                "dfilter",
+                (
                     (not self._has_header)
-                    and any(
-                        [
-                            not isinstance(item, int)
-                            for item in rfilter.keys()
-                        ]
-                    )
-                )
+                    and any([not isinstance(item, int) for item in rfilter.keys()])
+                ),
             )
         else:
             pexdoc.exh.addai(
-                'rfilter', (
+                "rfilter",
+                (
                     (not self._has_header)
-                    and any(
-                        [
-                            not isinstance(item, int)
-                            for item in rfilter.keys()
-                        ]
-                    )
-                )
+                    and any([not isinstance(item, int) for item in rfilter.keys()])
+                ),
             )
         for key in rfilter:
             self._in_header(key)
             rfilter[key] = (
-                [rfilter[key]]
-                if isinstance(rfilter[key], str) else
-                rfilter[key]
+                [rfilter[key]] if isinstance(rfilter[key], str) else rfilter[key]
             )
 
-    @pexdoc.pcontracts.contract(dfilter='csv_data_filter')
+    @pexdoc.pcontracts.contract(dfilter="csv_data_filter")
     def add_dfilter(self, dfilter):
         r"""
-        Adds more row(s) or column(s) to the existing data filter.
+        Add more row(s) or column(s) to the existing data filter.
+
         Duplicate filter values are eliminated
 
         :param dfilter: Row and/or column filter
@@ -563,7 +544,7 @@ class CsvFile(object):
     @pexdoc.pcontracts.contract(filtered=bool)
     def cols(self, filtered=False):
         r"""
-        Returns the number of data columns
+        Return the number of data columns.
 
         :param filtered: Flag that indicates whether the raw (input) data
                          should be used (False) or whether filtered data
@@ -580,12 +561,14 @@ class CsvFile(object):
         """
         return self._fdata_cols if filtered else self._data_cols
 
-    @pexdoc.pcontracts.contract(filtered='csv_filtered', no_empty=bool)
+    @pexdoc.pcontracts.contract(filtered="csv_filtered", no_empty=bool)
     def data(self, filtered=False, no_empty=False):
         r"""
-         Returns (filtered) file data. The returned object is a list, each item
-         is a sub-list corresponding to a row of data; each item in the
-         sub-lists contains data corresponding to a particular column
+         Return (filtered) file data.
+
+         The returned object is a list, each item is a sub-list corresponding
+         to a row of data; each item in the sub-lists contains data
+         corresponding to a particular column
 
         :param filtered: Filtering type
         :type  filtered: :ref:`CsvFiltered`
@@ -609,10 +592,10 @@ class CsvFile(object):
         """
         return self._apply_filter(filtered, no_empty)
 
-    @pexdoc.pcontracts.contract(order='csv_col_sort')
+    @pexdoc.pcontracts.contract(order="csv_col_sort")
     def dsort(self, order):
         r"""
-        Sorts rows
+        Sort rows.
 
         :param order: Sort order
         :type  order: :ref:`CsvColFilter`
@@ -632,10 +615,7 @@ class CsvFile(object):
         """
         # Make order conforming to a list of dictionaries
         order = order if isinstance(order, list) else [order]
-        norder = [
-            {item:'A'} if not isinstance(item, dict) else item
-            for item in order
-        ]
+        norder = [{item: "A"} if not isinstance(item, dict) else item for item in order]
         # Verify that all columns exist in file
         self._in_header([list(item.keys())[0] for item in norder])
         # Get column indexes
@@ -644,9 +624,10 @@ class CsvFile(object):
             for key, value in nitem.items():
                 clist.append(
                     (
-                        key if isinstance(key, int) else
-                        self._header_upper.index(key.upper()),
-                        value.upper() == 'D'
+                        key
+                        if isinstance(key, int)
+                        else self._header_upper.index(key.upper()),
+                        value.upper() == "D",
                     )
                 )
         # From the Python documentation:
@@ -661,17 +642,17 @@ class CsvFile(object):
             fpointer = operator.itemgetter(cindex)
             self._data.sort(key=fpointer, reverse=rvalue)
 
-
     @pexdoc.pcontracts.contract(filtered=bool)
     def header(self, filtered=False):
         r"""
-        Returns the data header. When the raw (input) data is used the data
-        header is a list of the comma-separated values file header if the file
-        is loaded with header (each list item is a column header) or a list of
-        column numbers if the file is loaded without header (column zero is
-        the leftmost column). When filtered data is used the data header
-        is the active column filter, if any, otherwise it is the same as the
-        raw (input) data header
+        Return data header.
+
+        When the raw (input) data is used the data header is a list of the
+        comma-separated values file header if the file is loaded with header
+        (each list item is a column header) or a list of column numbers if the
+        file is loaded without header (column zero is the leftmost column).
+        When filtered data is used the data header is the active column filter,
+        if any, otherwise it is the same as the raw (input) data header
 
         :param filtered: Flag that indicates whether the raw (input) data
                          should be used (False) or whether filtered data
@@ -690,14 +671,14 @@ class CsvFile(object):
         """
         return (
             self._header
-            if (not filtered) or (filtered and self._cfilter is None) else
-            self._cfilter
+            if (not filtered) or (filtered and self._cfilter is None)
+            else self._cfilter
         )
 
-    @pexdoc.pcontracts.contract(rdata='list(list)', filtered='csv_filtered')
+    @pexdoc.pcontracts.contract(rdata="list(list)", filtered="csv_filtered")
     def replace(self, rdata, filtered=False):
         r"""
-        Replaces data
+        Replace data.
 
         :param rdata: Replacement data
         :type  rdata: list of lists
@@ -723,34 +704,28 @@ class CsvFile(object):
         .. [[[end]]]
         """
         # pylint: disable=R0914
-        rdata_ex = pexdoc.exh.addai('rdata')
+        rdata_ex = pexdoc.exh.addai("rdata")
         rows_ex = pexdoc.exh.addex(
-            ValueError,
-            'Number of rows mismatch between input and replacement data'
+            ValueError, "Number of rows mismatch between input and replacement data"
         )
         cols_ex = pexdoc.exh.addex(
-            ValueError,
-            'Number of columns mismatch between input and replacement data'
+            ValueError, "Number of columns mismatch between input and replacement data"
         )
         rdata_ex(any([len(item) != len(rdata[0]) for item in rdata]))
         # Use all columns if no specification has been given
         cfilter = (
-            self._cfilter
-            if filtered in [True, 'B', 'b', 'C', 'c'] else
-            self._header
+            self._cfilter if filtered in [True, "B", "b", "C", "c"] else self._header
         )
         # Verify column names, has to be done before getting data
-        col_num = len(self._data[0])-1
+        col_num = len(self._data[0]) - 1
         odata = self._apply_filter(filtered)
         cfilter = (
-            self._cfilter
-            if filtered in [True, 'B', 'b', 'C', 'c'] else
-            self._header
+            self._cfilter if filtered in [True, "B", "b", "C", "c"] else self._header
         )
         col_index = [
             self._header_upper.index(col_id.upper())
-            if isinstance(col_id, str) else
-            col_id
+            if isinstance(col_id, str)
+            else col_id
             for col_id in cfilter
         ]
         rows_ex(len(odata) != len(rdata))
@@ -758,17 +733,18 @@ class CsvFile(object):
         df_tuples = self._format_rfilter(self._rfilter)
         rnum = 0
         for row in self._data:
-            if (not filtered) or (filtered and
-                all([row[col_num] in col_value
-                for col_num, col_value in df_tuples])):
+            if (not filtered) or (
+                filtered
+                and all([row[col_num] in col_value for col_num, col_value in df_tuples])
+            ):
                 for col_num, new_data in zip(col_index, rdata[rnum]):
                     row[col_num] = new_data
-                rnum = rnum+1
+                rnum = rnum + 1
 
-    @pexdoc.pcontracts.contract(ftype='csv_filtered')
+    @pexdoc.pcontracts.contract(ftype="csv_filtered")
     def reset_dfilter(self, ftype=True):
         r"""
-        Reset (clears) the data filter
+        Reset (clears) the data filter.
 
         :param ftype: Filter type
         :type  ftype: :ref:`CsvFiltered`
@@ -786,7 +762,7 @@ class CsvFile(object):
     @pexdoc.pcontracts.contract(filtered=bool)
     def rows(self, filtered=False):
         r"""
-        Returns the number of data rows
+        Return the number of data rows.
 
         :param filtered: Flag that indicates whether the raw (input) data
                          should be used (False) or whether filtered data
@@ -804,15 +780,14 @@ class CsvFile(object):
         return self._fdata_rows if filtered else self._data_rows
 
     @pexdoc.pcontracts.contract(
-            fname='None|file_name',
-            filtered='csv_filtered',
-            header='str|bool|list[>0](str)',
-            append=bool
+        fname="None|file_name",
+        filtered="csv_filtered",
+        header="str|bool|list[>0](str)",
+        append=bool,
     )
     def write(self, fname=None, filtered=False, header=True, append=False):
         r"""
-        Writes (processed) data to a specified comma-separated values (CSV)
-        file
+        Write (processed) data to a specified comma-separated values (CSV) file.
 
         :param fname: Name of the comma-separated values file to be
                       written. If None the file from which the data originated
@@ -856,39 +831,27 @@ class CsvFile(object):
         .. [[[end]]]
         """
         # pylint: disable=R0913
-        write_ex = pexdoc.exh.addex(
-            ValueError, 'There is no data to save to file'
-        )
+        write_ex = pexdoc.exh.addex(ValueError, "There is no data to save to file")
         fname = self._fname if fname is None else fname
         data = self.data(filtered=filtered)
-        write_ex(
-            (len(data) == 0) or ((len(data) == 1) and (len(data[0]) == 0))
-        )
+        write_ex((len(data) == 0) or ((len(data) == 1) and (len(data[0]) == 0)))
         if header:
             header = [header] if isinstance(header, str) else header
             cfilter = self._gen_col_index(filtered=filtered)
             filtered_header = (
                 [self._header[item] for item in cfilter]
-                if self._has_header else
-                cfilter
+                if self._has_header
+                else cfilter
             )
-            file_header = (
-                filtered_header
-                if isinstance(header, bool) else
-                header
-            )
+            file_header = filtered_header if isinstance(header, bool) else header
         # Convert None's to ''
-        data = [
-            ["''" if item is None else item for item in row] for row in data
-        ]
-        _write_int(
-            fname, [file_header]+data if header else data, append=append
-        )
+        data = [["''" if item is None else item for item in row] for row in data]
+        _write_int(fname, [file_header] + data if header else data, append=append)
 
     # Managed attributes
-    cfilter = property(_get_cfilter, _set_cfilter, doc='Column filter')
+    cfilter = property(_get_cfilter, _set_cfilter, doc="Column filter")
     r"""
-    Sets or returns the column filter
+    Set or return the column filter.
 
     :type: :ref:`CsvColFilter` or None. If None no column filtering is done
 
@@ -909,10 +872,12 @@ class CsvFile(object):
     .. [[[end]]]
     """
 
-    dfilter = property(_get_dfilter, _set_dfilter, doc='Data filter')
+    dfilter = property(_get_dfilter, _set_dfilter, doc="Data filter")
     r"""
-    Sets or returns the data (row and/or column) filter. The first tuple
-    item is the row filter and the second tuple item is the column filter
+    Set or return the data (row and/or column) filter.
+
+    The first tuple item is the row filter and the second tuple item is the
+    column filter
 
     :type: :ref:`CsvDataFilter` or None. If None no data filtering is done
 
@@ -933,9 +898,9 @@ class CsvFile(object):
     .. [[[end]]]
     """
 
-    rfilter = property(_get_rfilter, _set_rfilter, doc='Returns row filter')
+    rfilter = property(_get_rfilter, _set_rfilter, doc="Returns row filter")
     r"""
-    Sets or returns the row filter
+    Set or return the row filter.
 
     :type: :ref:`CsvRowFilter` or None. If None no row filtering is done
 

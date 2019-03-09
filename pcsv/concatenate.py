@@ -1,29 +1,6 @@
-# concatenate.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
-# See LICENSE for details
-# pylint: disable=C0111,W0105,W0611
-
-# PyPI imports
-import pexdoc.exh
-import pexdoc.pcontracts
-from pexdoc.ptypes import (
-    file_name,
-    file_name_exists,
-    non_negative_integer
-)
-# Intra-package imports
-from .ptypes import (
-    csv_col_filter,
-    csv_row_filter,
-)
-from .csv_file import CsvFile
-from .write import write
-
-
-###
-# Exception tracing initialization code
-###
 """
+Concatenate CSV files.
+
 [[[cog
 import os, sys
 sys.path.append(os.environ['TRACER_DIR'])
@@ -32,6 +9,20 @@ exobj = trace_ex_pcsv_concatenate.trace_module(no_print=True)
 ]]]
 [[[end]]]
 """
+# concatenate.py
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
+# See LICENSE for details
+# pylint: disable=C0111,W0105,W0611
+
+# PyPI imports
+import pexdoc.exh
+import pexdoc.pcontracts
+from pexdoc.ptypes import file_name, file_name_exists, non_negative_integer
+
+# Intra-package imports
+from .ptypes import csv_col_filter, csv_row_filter
+from .csv_file import CsvFile
+from .write import write
 
 
 ###
@@ -39,22 +30,36 @@ exobj = trace_ex_pcsv_concatenate.trace_module(no_print=True)
 ###
 _C = lambda *x: all([item is not None for item in x])
 
+
 @pexdoc.pcontracts.contract(
-    fname1='file_name_exists', fname2='file_name_exists',
-    dfilter1='csv_data_filter', dfilter2='csv_data_filter',
-    has_header1=bool, has_header2=bool,
-    frow1='non_negative_integer', frow2='non_negative_integer',
-    ofname='None|file_name', ocols='None|list(str)'
+    fname1="file_name_exists",
+    fname2="file_name_exists",
+    dfilter1="csv_data_filter",
+    dfilter2="csv_data_filter",
+    has_header1=bool,
+    has_header2=bool,
+    frow1="non_negative_integer",
+    frow2="non_negative_integer",
+    ofname="None|file_name",
+    ocols="None|list(str)",
 )
 def concatenate(
-    fname1, fname2,
-    dfilter1=None, dfilter2=None,
-    has_header1=True, has_header2=True,
-    frow1=0, frow2=0,
-    ofname=None, ocols=None):
+    fname1,
+    fname2,
+    dfilter1=None,
+    dfilter2=None,
+    has_header1=True,
+    has_header2=True,
+    frow1=0,
+    frow2=0,
+    ofname=None,
+    ocols=None,
+):
     r"""
-    Concatenates two comma-separated values file. Data rows from the second
-    file are appended at the end of the data rows from the first file
+    Concatenate two comma-separated values file.
+
+    Data rows from the second file are appended at the end of the data rows
+    from the first file
 
     :param fname1: Name of the first comma-separated values file, the file
                    whose data appears first in the output file
@@ -147,19 +152,14 @@ def concatenate(
     .. [[[end]]]
     """
     # pylint: disable=R0913,R0914
-    iro = pexdoc.exh.addex(
-        RuntimeError, 'Files have different number of columns'
-    )
+    iro = pexdoc.exh.addex(RuntimeError, "Files have different number of columns")
     iom = pexdoc.exh.addex(
-        RuntimeError,
-        'Number of columns in data files and output columns are different'
+        RuntimeError, "Number of columns in data files and output columns are different"
     )
     # Read and validate file 1
-    obj1 = CsvFile(
-        fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1)
+    obj1 = CsvFile(fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1)
     # Read and validate file 2
-    obj2 = CsvFile(
-        fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2)
+    obj2 = CsvFile(fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2)
     # Assign output data structure
     ofname = fname1 if ofname is None else ofname
     # Create new header
@@ -173,10 +173,7 @@ def concatenate(
         iom((obj1.cfilter is not None) and (len(obj1.cfilter) != len(ocols)))
         ocols = [ocols]
     # Miscellaneous data validation
-    iro(
-        _C(obj1.cfilter, obj2.cfilter) and
-        (len(obj1.cfilter) != len(obj2.cfilter))
-    )
+    iro(_C(obj1.cfilter, obj2.cfilter) and (len(obj1.cfilter) != len(obj2.cfilter)))
     # Write final output
-    data = ocols+obj1.data(filtered=True)+obj2.data(filtered=True)
+    data = ocols + obj1.data(filtered=True) + obj2.data(filtered=True)
     write(fname=ofname, data=data, append=False)

@@ -1,29 +1,6 @@
-# replace.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
-# See LICENSE for details
-# pylint: disable=C0111,W0105,W0611
-
-# PyPI imports
-import pexdoc.exh
-import pexdoc.pcontracts
-from pexdoc.ptypes import (
-    file_name,
-    file_name_exists,
-    non_negative_integer
-)
-# Intra-package imports
-from .ptypes import (
-    csv_col_filter,
-    csv_row_filter,
-)
-from .csv_file import CsvFile
-from .write import write
-
-
-###
-# Exception tracing initialization code
-###
 """
+Replace data in one file with data from another file.
+
 [[[cog
 import os, sys
 sys.path.append(os.environ['TRACER_DIR'])
@@ -32,31 +9,51 @@ exobj = trace_ex_pcsv_replace.trace_module(no_print=True)
 ]]]
 [[[end]]]
 """
+# replace.py
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
+# See LICENSE for details
+# pylint: disable=C0111,W0105,W0611
+
+# PyPI imports
+import pexdoc.exh
+import pexdoc.pcontracts
+from pexdoc.ptypes import file_name, file_name_exists, non_negative_integer
+
+# Intra-package imports
+from .ptypes import csv_col_filter, csv_row_filter
+from .csv_file import CsvFile
+from .write import write
 
 
 ###
 # Functions
 ###
 @pexdoc.pcontracts.contract(
-    fname1='file_name_exists',
-    fname2='file_name_exists',
-    dfilter1='csv_data_filter',
-    dfilter2='csv_data_filter',
+    fname1="file_name_exists",
+    fname2="file_name_exists",
+    dfilter1="csv_data_filter",
+    dfilter2="csv_data_filter",
     has_header1=bool,
     has_header2=bool,
-    frow1='non_negative_integer',
-    frow2='non_negative_integer',
-    ofname='None|file_name',
-    ocols='None|list(str)'
+    frow1="non_negative_integer",
+    frow2="non_negative_integer",
+    ofname="None|file_name",
+    ocols="None|list(str)",
 )
 def replace(
-    fname1, fname2,
-    dfilter1, dfilter2,
-    has_header1=True, has_header2=True,
-    frow1=0, frow2=0,
-    ofname=None, ocols=None):
+    fname1,
+    fname2,
+    dfilter1,
+    dfilter2,
+    has_header1=True,
+    has_header2=True,
+    frow1=0,
+    frow2=0,
+    ofname=None,
+    ocols=None,
+):
     r"""
-    Replaces data in one file with data from another file
+    Replace data in one file with data from another file.
 
     :param fname1: Name of the input comma-separated values file, the file
                    that contains the columns to be replaced
@@ -150,19 +147,15 @@ def replace(
     """
     # pylint: disable=R0913,R0914
     irmm_ex = pexdoc.exh.addex(
-        RuntimeError, 'Number of input and replacement columns are different'
+        RuntimeError, "Number of input and replacement columns are different"
     )
     iomm_ex = pexdoc.exh.addex(
-        RuntimeError, 'Number of input and output columns are different'
+        RuntimeError, "Number of input and output columns are different"
     )
     # Read and validate input data
-    iobj = CsvFile(
-        fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1
-    )
+    iobj = CsvFile(fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1)
     # Read and validate replacement data
-    robj = CsvFile(
-        fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2
-    )
+    robj = CsvFile(fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2)
     # Assign output data structure
     ofname = fname1 if ofname is None else ofname
     icfilter = iobj.header() if iobj.cfilter is None else iobj.cfilter
@@ -174,9 +167,7 @@ def replace(
     # Replace data
     iobj.replace(rdata=robj.data(filtered=True), filtered=True)
     iheader_upper = [
-        item.upper()
-        if isinstance(item, str) else item
-        for item in iobj.header()
+        item.upper() if isinstance(item, str) else item for item in iobj.header()
     ]
     icfilter_index = [
         iheader_upper.index(item.upper() if isinstance(item, str) else item)
@@ -188,8 +179,8 @@ def replace(
         for col_num, idata in enumerate(iobj.header()):
             orow.append(
                 ocols[icfilter_index.index(col_num)]
-                if col_num in icfilter_index else
-                idata
+                if col_num in icfilter_index
+                else idata
             )
     # Write (new) file
     iobj.write(fname=ofname, header=orow if orow else False, append=False)

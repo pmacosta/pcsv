@@ -1,7 +1,7 @@
 # term_echo.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
 # See LICENSE for details
-# pylint: disable=C0111
+# pylint: disable=C0111,R0912,R1717
 
 import os
 import platform
@@ -13,13 +13,14 @@ import sys
 # Functions
 ###
 def ste(command, nindent, mdir, fpointer):
-    """
-    Simplified terminal echo; prints STDOUT resulting from a given Bash shell
-    command (relative to the package :code:`sbin` directory) formatted
-    in reStructuredText
+    r"""
+    Echo terminal output.
+
+    Print STDOUT resulting from a given Bash shell command (relative to the
+    package :code:`pypkg` directory) formatted in reStructuredText
 
     :param command: Bash shell command, relative to
-                    :bash:`${PUTIL_DIR}/sbin`
+                    :bash:`${PMISC_DIR}/pypkg`
     :type  command: string
 
     :param nindent: Indentation level
@@ -49,29 +50,24 @@ def ste(command, nindent, mdir, fpointer):
 
         .. code-block:: bash
 
-        $ ${PUTIL_DIR}/sbin/build_docs.py -h
-        usage: build_docs.py [-h] [-d DIRECTORY] [-r]
-                             [-n NUM_CPUS] [-t]
-                             [module_name [module_name ...]]
+        $ ${PMISC_DIR}/pypkg/build_docs.py -h
+        usage: build_docs.py [-h] [-d DIRECTORY] [-n NUM_CPUS]
         ...
 
         .. ]]]
 
     """
     term_echo(
-        '${{PUTIL_DIR}}{sep}sbin{sep}{cmd}'.format(
-            sep=os.path.sep, cmd=command
-        ),
+        "${{PMISC_DIR}}{sep}pypkg{sep}{cmd}".format(sep=os.path.sep, cmd=command),
         nindent,
-        {'PUTIL_DIR':mdir},
-        fpointer
+        {"PMISC_DIR": mdir},
+        fpointer,
     )
 
 
 def term_echo(command, nindent=0, env=None, fpointer=None, cols=60):
     """
-    Terminal echo; prints STDOUT resulting from a given Bash shell command
-    formatted in reStructuredText
+    Print STDOUT resulting from a Bash shell command formatted in reStructuredText.
 
     :param command: Bash shell command
     :type  command: string
@@ -100,36 +96,29 @@ def term_echo(command, nindent=0, env=None, fpointer=None, cols=60):
     # pylint: disable=R0204
     # Set argparse width so that output does not need horizontal scroll
     # bar in narrow windows or displays
-    os.environ['COLUMNS'] = str(cols)
+    os.environ["COLUMNS"] = str(cols)
     command_int = command
     if env:
         for var, repl in env.items():
-            command_int = command_int.replace('${'+var+'}', repl)
-    tokens = command_int.split(' ')
+            command_int = command_int.replace("${" + var + "}", repl)
+    tokens = command_int.split(" ")
     # Add Python interpreter executable for Python scripts on Windows since
     # the shebang does not work
-    if ((platform.system().lower() == 'windows') and
-       (tokens[0].endswith('.py'))):
-        tokens = [sys.executable]+tokens
-    proc = subprocess.Popen(
-        tokens,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
+    if (platform.system().lower() == "windows") and (tokens[0].endswith(".py")):
+        tokens = [sys.executable] + tokens
+    proc = subprocess.Popen(tokens, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout = proc.communicate()[0]
     if sys.hexversion >= 0x03000000:
-        stdout = stdout.decode('utf-8')
-    stdout = stdout.split('\n')
-    indent = nindent*' '
-    fpointer('\n', dedent=False)
-    fpointer('{0}.. code-block:: bash\n'.format(indent), dedent=False)
-    fpointer('\n', dedent=False)
-    fpointer('{0}    $ {1}\n'.format(indent, command), dedent=False)
+        stdout = stdout.decode("utf-8")
+    stdout = stdout.split("\n")
+    indent = nindent * " "
+    fpointer("\n", dedent=False)
+    fpointer("{0}.. code-block:: bash\n".format(indent), dedent=False)
+    fpointer("\n", dedent=False)
+    fpointer("{0}    $ {1}\n".format(indent, command), dedent=False)
     for line in stdout:
         if line.strip():
-            fpointer(
-                indent+'    '+line.replace('\t', '    ')+'\n', dedent=False
-            )
+            fpointer(indent + "    " + line.replace("\t", "    ") + "\n", dedent=False)
         else:
-            fpointer('\n', dedent=False)
-    fpointer('\n', dedent=False)
+            fpointer("\n", dedent=False)
+    fpointer("\n", dedent=False)

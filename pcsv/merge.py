@@ -1,29 +1,6 @@
-# merge.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
-# See LICENSE for details
-# pylint: disable=C0111,W0105,W0611
-
-# PyPI imports
-import pexdoc.exh
-import pexdoc.pcontracts
-from pexdoc.ptypes import (
-    file_name,
-    file_name_exists,
-    non_negative_integer
-)
-# Intra-package imports
-from .ptypes import (
-    csv_col_filter,
-    csv_row_filter,
-)
-from .csv_file import CsvFile
-from .write import write
-
-
-###
-# Exception tracing initialization code
-###
 """
+Merge two comma-separated values files.
+
 [[[cog
 import os, sys
 sys.path.append(os.environ['TRACER_DIR'])
@@ -32,28 +9,55 @@ exobj = trace_ex_pcsv_merge.trace_module(no_print=True)
 ]]]
 [[[end]]]
 """
+# merge.py
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
+# See LICENSE for details
+# pylint: disable=C0111,W0105,W0611
+
+# PyPI imports
+import pexdoc.exh
+import pexdoc.pcontracts
+from pexdoc.ptypes import file_name, file_name_exists, non_negative_integer
+
+# Intra-package imports
+from .ptypes import csv_col_filter, csv_row_filter
+from .csv_file import CsvFile
+from .write import write
 
 
 ###
 # Functions
 ###
 @pexdoc.pcontracts.contract(
-    fname1='file_name_exists', fname2='file_name_exists',
-    dfilter1='csv_data_filter', dfilter2='csv_data_filter',
-    has_header1=bool, has_header2=bool,
-    frow1='non_negative_integer', frow2='non_negative_integer',
-    ofname='None|file_name', ocols='None|list(str)'
+    fname1="file_name_exists",
+    fname2="file_name_exists",
+    dfilter1="csv_data_filter",
+    dfilter2="csv_data_filter",
+    has_header1=bool,
+    has_header2=bool,
+    frow1="non_negative_integer",
+    frow2="non_negative_integer",
+    ofname="None|file_name",
+    ocols="None|list(str)",
 )
 def merge(
-    fname1, fname2,
-    dfilter1=None, dfilter2=None,
-    has_header1=True, has_header2=True,
-    frow1=0, frow2=0,
-    ofname=None, ocols=None):
+    fname1,
+    fname2,
+    dfilter1=None,
+    dfilter2=None,
+    has_header1=True,
+    has_header2=True,
+    frow1=0,
+    frow2=0,
+    ofname=None,
+    ocols=None,
+):
     r"""
-    Merges two comma-separated values files. Data columns from the second
-    file are appended after data columns from the first file. Empty values in
-    columns are used if the files have different number of rows
+    Merge two comma-separated values files.
+
+    Data columns from the second file are appended after data columns from the
+    first file. Empty values in columns are used if the files have different
+    number of rows
 
     :param fname1: Name of the first comma-separated values file, the file
                    whose columns appear first in the output file
@@ -147,17 +151,12 @@ def merge(
     """
     # pylint: disable=R0913,R0914
     iomm_ex = pexdoc.exh.addex(
-        RuntimeError,
-        'Combined columns in data files and output columns are different'
+        RuntimeError, "Combined columns in data files and output columns are different"
     )
     # Read and validate file 1
-    obj1 = CsvFile(
-        fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1
-    )
+    obj1 = CsvFile(fname=fname1, dfilter=dfilter1, has_header=has_header1, frow=frow1)
     # Read and validate file 2
-    obj2 = CsvFile(
-        fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2
-    )
+    obj2 = CsvFile(fname=fname2, dfilter=dfilter2, has_header=has_header2, frow=frow2)
     # Assign output data structure
     ofname = fname1 if ofname is None else ofname
     cfilter1 = obj1.header() if obj1.cfilter is None else obj1.cfilter
@@ -166,43 +165,33 @@ def merge(
     cols1 = len(cfilter1)
     cols2 = len(cfilter2)
     if (ocols is None) and has_header1 and has_header2:
-        ocols = [cfilter1+cfilter2]
+        ocols = [cfilter1 + cfilter2]
     elif (ocols is None) and has_header1 and (not has_header2):
         ocols = [
-            cfilter1+
-            [
-                'Column {0}'.format(item)
-                for item in range(cols1+1, cols1+cols2+1)
+            cfilter1
+            + [
+                "Column {0}".format(item)
+                for item in range(cols1 + 1, cols1 + cols2 + 1)
             ]
         ]
     elif (ocols is None) and (not has_header1) and has_header2:
-        ocols = [
-            [
-                'Column {0}'.format(item)
-                for item in range(1, cols1+1)
-            ]
-            +cfilter2
-        ]
+        ocols = [["Column {0}".format(item) for item in range(1, cols1 + 1)] + cfilter2]
     elif ocols is None:
         ocols = []
     else:
-        iomm_ex(cols1+cols2 != len(ocols))
+        iomm_ex(cols1 + cols2 != len(ocols))
         ocols = [ocols]
     # Even out rows
-    delta = obj1.rows(filtered=True)-obj2.rows(filtered=True)
+    delta = obj1.rows(filtered=True) - obj2.rows(filtered=True)
     data1 = obj1.data(filtered=True)
     data2 = obj2.data(filtered=True)
     if delta > 0:
-        row = [cols2*[None]]
-        data2 += delta*row
+        row = [cols2 * [None]]
+        data2 += delta * row
     elif delta < 0:
-        row = [cols1*[None]]
-        data1 += abs(delta)*row
+        row = [cols1 * [None]]
+        data1 += abs(delta) * row
     data = ocols
     for item1, item2 in zip(data1, data2):
-        data.append(item1+item2)
-    write(
-        fname=ofname,
-        data=data,
-        append=False
-    )
+        data.append(item1 + item2)
+    write(fname=ofname, data=data, append=False)

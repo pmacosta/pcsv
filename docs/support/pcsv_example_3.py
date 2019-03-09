@@ -1,9 +1,10 @@
 # pcsv_example_3.py
-# Copyright (c) 2013-2018 Pablo Acosta-Serafini
+# Copyright (c) 2013-2019 Pablo Acosta-Serafini
 # See LICENSE for details
 # pylint: disable=C0111,C0410,W0104
 
 import pmisc, pcsv
+
 
 def main():
     ctx = pmisc.TmpFile
@@ -11,17 +12,13 @@ def main():
         with ctx() as fname2:
             with ctx() as ofname:
                 # Create first data file
-                data1 = [
-                    [1, 9.99],
-                    [2, 10000],
-                    [3, 0.10]
-                ]
+                data1 = [[1, 9.99], [2, 10000], [3, 0.10]]
                 pcsv.write(fname1, data1, append=False)
                 # Create second data file
                 data2 = [
-                    ['Joe', 10, 'Sunday'],
-                    ['Sue', 20, 'Thursday'],
-                    ['Pat', 15, 'Tuesday']
+                    ["Joe", 10, "Sunday"],
+                    ["Sue", 20, "Thursday"],
+                    ["Pat", 15, "Tuesday"],
                 ]
                 pcsv.write(fname2, data2, append=False)
                 # Concatenate file1 and file2. Filter out
@@ -33,21 +30,22 @@ def main():
                     has_header2=False,
                     dfilter2=[0, 2],
                     ofname=ofname,
-                    ocols=['D1', 'D2']
+                    ocols=["D1", "D2"],
                 )
                 # Verify that resulting file is correct
                 ref_data = [
-                    ['D1', 'D2'],
+                    ["D1", "D2"],
                     [1, 9.99],
                     [2, 10000],
                     [3, 0.10],
-                    ['Joe', 'Sunday'],
-                    ['Sue', 'Thursday'],
-                    ['Pat', 'Tuesday']
+                    ["Joe", "Sunday"],
+                    ["Sue", "Thursday"],
+                    ["Pat", "Tuesday"],
                 ]
                 obj = pcsv.CsvFile(ofname)
                 assert obj.header() == ref_data[0]
                 assert obj.data() == ref_data[1:]
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
