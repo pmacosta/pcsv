@@ -124,7 +124,7 @@
 	"pmisc":{
 		"name":"Pmisc",
 		"optional":false,
-		"url":"http://pmisc.readthedocs.org",
+		"url":"https://pmisc.readthedocs.org",
 		"cat":["main", "rtd"],
 		"ver":">=1.5.5",
 		"pos":15
@@ -132,7 +132,7 @@
 	"pexdoc":{
 		"name":"Pexdoc",
 		"optional":false,
-		"url":"http://pexdoc.readthedocs.org",
+		"url":"https://pexdoc.readthedocs.org",
 		"cat":["main", "rtd"],
 		"ver":">=1.1.1",
 		"pos":16
@@ -140,7 +140,7 @@
 	"pytest-pmisc":{
 		"name":"Pytest-pmisc",
 		"optional":false,
-		"url":"http://pytest-pmisc.readthedocs.org",
+		"url":"https://pytest-pmisc.readthedocs.org",
 		"cat":["tests"],
 		"ver":">=1.0.6",
 		"pos":17

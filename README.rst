@@ -2,42 +2,38 @@
 .. Copyright (c) 2013-2019 Pablo Acosta-Serafini
 .. See LICENSE for details
 
-
 .. image:: https://badge.fury.io/py/pcsv.svg
-    :target: https://pypi.python.org/pypi/pcsv
+    :target: https://pypi.org/project/pcsv
     :alt: PyPI version
 
 .. image:: https://img.shields.io/pypi/l/pcsv.svg
-    :target: https://pypi.python.org/pypi/pcsv
+    :target: https://pypi.org/project/pcsv
     :alt: License
 
 .. image:: https://img.shields.io/pypi/pyversions/pcsv.svg
-    :target: https://pypi.python.org/pypi/pcsv
+    :target: https://pypi.org/project/pcsv
     :alt: Python versions supported
 
 .. image:: https://img.shields.io/pypi/format/pcsv.svg
-    :target: https://pypi.python.org/pypi/pcsv
+    :target: https://pypi.org/project/pcsv
     :alt: Format
 
 |
 
 .. image::
-   https://travis-ci.org/pmacosta/pcsv.svg?branch=master
+    https://dev.azure.com/pmasdev/pcsv/_apis/build/status/pmacosta.pcsv?branchName=master
+    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=3&_a=summary
+    :alt: Continuous integration test status
 
 .. image::
-   https://ci.appveyor.com/api/projects/status/
-   7dpk342kxs8kcg5t/branch/master?svg=true
-   :alt: Windows continuous integration
+    https://img.shields.io/azure-devops/coverage/pmasdev/pcsv/7.svg
+    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=6&_a=summary
+    :alt: Continuous integration test coverage
 
 .. image::
-   https://codecov.io/github/pmacosta/pcsv/coverage.svg?branch=master
-   :target: https://codecov.io/github/pmacosta/pcsv?branch=master
-   :alt: Continuous integration coverage
-
-.. image::
-   https://readthedocs.org/projects/pip/badge/?version=stable
-   :target: http://pip.readthedocs.org/en/stable/?badge=stable
-   :alt: Documentation status
+    https://readthedocs.org/projects/pip/badge/?version=stable
+    :target: https://pip.readthedocs.io/en/stable/?badge=stable
+    :alt: Documentation status
 
 |
 
@@ -45,36 +41,38 @@ Description
 ===========
 
 .. role:: bash(code)
-        :language: bash
+	:language: bash
 
 .. [[[cog
-.. import os, sys
-.. from docs.support.term_echo import ste
-.. file_name = sys.modules['docs.support.term_echo'].__file__
-.. mdir = os.path.realpath(
-..     os.path.dirname(os.path.dirname(os.path.dirname(file_name)))
+.. import os, sys, pmisc, docs.support.requirements_to_rst
+.. file_name = sys.modules['docs.support.requirements_to_rst'].__file__
+.. mdir = os.path.join(os.path.realpath(
+..    os.path.dirname(os.path.dirname(os.path.dirname(file_name)))), 'pypkg'
 .. )
-.. import docs.support.requirements_to_rst
 .. docs.support.requirements_to_rst.def_links(cog)
 .. ]]]
 .. _Astroid: https://bitbucket.org/logilab/astroid
-.. _Cog: http://nedbatchelder.com/code/cog
-.. _Coverage: http://coverage.readthedocs.org/en/coverage-4.0a5
+.. _Cog: https://nedbatchelder.com/code/cog
+.. _Coverage: https://coverage.readthedocs.io
 .. _Docutils: http://docutils.sourceforge.net/docs
-.. _Mock: http://www.voidspace.org.uk/python/mock
-.. _Pexdoc: http://pexdoc.readthedocs.org
-.. _Pmisc: http://pmisc.readthedocs.org
+.. _Mock: https://docs.python.org/3/library/unittest.mock.html
+.. _Pexdoc: https://pexdoc.readthedocs.org
+.. _Pmisc: https://pmisc.readthedocs.org
 .. _PyContracts: https://andreacensi.github.io/contracts
-.. _Pylint: http://www.pylint.org
+.. _Pydocstyle: http://www.pydocstyle.org
+.. _Pylint: https://www.pylint.org
 .. _Py.test: http://pytest.org
-.. _Pytest-coverage: https://pypi.python.org/pypi/pytest-cov
-.. _Pytest-xdist: https://pypi.python.org/pypi/pytest-xdist
+.. _Pytest-coverage: https://pypi.org/project/pytest-cov
+.. _Pytest-pmisc: https://pytest-pmisc.readthedocs.org
+.. _Pytest-xdist: https://pypi.org/project/pytest-xdist
 .. _Sphinx: http://sphinx-doc.org
-.. _ReadTheDocs Sphinx theme: https://github.com/snide/sphinx_rtd_theme
+.. _ReadTheDocs Sphinx theme: https://github.com/rtfd/sphinx_rtd_theme
 .. _Inline Syntax Highlight Sphinx Extension:
    https://bitbucket.org/klorenz/sphinxcontrib-inlinesyntaxhighlight
+.. _Shellcheck Linter Sphinx Extension:
+   https://pypi.org/project/sphinxcontrib-shellcheck
 .. _Tox: https://testrun.org/tox
-.. _Virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs
+.. _Virtualenv: https://docs.python-guide.org/dev/virtualenvs
 .. [[[end]]]
 
 This module can be used to handle comma-separated values (CSV) files and do
@@ -89,12 +87,15 @@ Read/write
 ^^^^^^^^^^
 
 .. [[[cog
-.. import docs.support.incfile
-.. docs.support.incfile.incfile(
+.. import pcsv
+.. import sys
+.. sys.path.append('.')
+.. import pypkg.incfile
+.. pypkg.incfile.incfile(
 ..     "pcsv_example_1.py",
 ..     cog.out,
 ..     "1,6-",
-..     None
+..     "./docs/support"
 .. )
 .. ]]]
 .. code-block:: python
@@ -102,14 +103,10 @@ Read/write
     # pcsv_example_1.py
     import pmisc, pcsv
 
+
     def main():
         with pmisc.TmpFile() as fname:
-            ref_data = [
-                ['Item', 'Cost'],
-                [1, 9.99],
-                [2, 10000],
-                [3, 0.10]
-            ]
+            ref_data = [["Item", "Cost"], [1, 9.99], [2, 10000], [3, 0.10]]
             # Write reference data to a file
             pcsv.write(fname, ref_data, append=False)
             # Read the data back
@@ -121,10 +118,11 @@ Read/write
         assert obj.data() == ref_data[1:]
         # Add a simple row filter, only look at rows that have
         # values 1 and 3 in the "Items" column
-        obj.rfilter = {'Item':[1, 3]}
+        obj.rfilter = {"Item": [1, 3]}
         assert obj.data(filtered=True) == [ref_data[1], ref_data[3]]
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         main()
 
 .. [[[end]]]
@@ -133,12 +131,15 @@ Replace data
 ^^^^^^^^^^^^
 
 .. [[[cog
-.. import docs.support.incfile
-.. docs.support.incfile.incfile(
+.. import pcsv
+.. import sys
+.. sys.path.append('.')
+.. import pypkg.incfile
+.. pypkg.incfile.incfile(
 ..     "pcsv_example_2.py",
 ..     cog.out,
 ..     "1,6-",
-..     None
+..     "./docs/support"
 .. )
 .. ]]]
 .. code-block:: python
@@ -146,25 +147,21 @@ Replace data
     # pcsv_example_2.py
     import pmisc, pcsv
 
+
     def main():
         ctx = pmisc.TmpFile
         with ctx() as fname1:
             with ctx() as fname2:
                 with ctx() as ofname:
                     # Create first (input) data file
-                    input_data = [
-                        ['Item', 'Cost'],
-                        [1, 9.99],
-                        [2, 10000],
-                        [3, 0.10]
-                    ]
+                    input_data = [["Item", "Cost"], [1, 9.99], [2, 10000], [3, 0.10]]
                     pcsv.write(fname1, input_data, append=False)
                     # Create second (replacement) data file
                     replacement_data = [
-                        ['Staff', 'Rate', 'Days'],
-                        ['Joe', 10, 'Sunday'],
-                        ['Sue', 20, 'Thursday'],
-                        ['Pat', 15, 'Tuesday']
+                        ["Staff", "Rate", "Days"],
+                        ["Joe", 10, "Sunday"],
+                        ["Sue", 20, "Thursday"],
+                        ["Pat", 15, "Tuesday"],
                     ]
                     pcsv.write(fname2, replacement_data, append=False)
                     # Replace "Cost" column of input file with "Rate" column
@@ -172,23 +169,19 @@ Replace data
                     # from Joe and Pat. Save resulting data to another file
                     pcsv.replace(
                         fname1=fname1,
-                        dfilter1=('Cost', {'Item':[1, 3]}),
+                        dfilter1=("Cost", {"Item": [1, 3]}),
                         fname2=fname2,
-                        dfilter2=('Rate', {'Staff':['Joe', 'Pat']}),
-                        ofname=ofname
+                        dfilter2=("Rate", {"Staff": ["Joe", "Pat"]}),
+                        ofname=ofname,
                     )
                     # Verify that resulting file is correct
-                    ref_data = [
-                        ['Item', 'Cost'],
-                        [1, 10],
-                        [2, 10000],
-                        [3, 15]
-                    ]
+                    ref_data = [["Item", "Cost"], [1, 10], [2, 10000], [3, 15]]
                     obj = pcsv.CsvFile(ofname)
                     assert obj.header() == ref_data[0]
                     assert obj.data() == ref_data[1:]
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         main()
 
 .. [[[end]]]
@@ -197,12 +190,15 @@ Concatenate two files
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. [[[cog
-.. import docs.support.incfile
-.. docs.support.incfile.incfile(
+.. import pcsv
+.. import sys
+.. sys.path.append('.')
+.. import pypkg.incfile
+.. pypkg.incfile.incfile(
 ..     "pcsv_example_3.py",
 ..     cog.out,
 ..     "1,6-",
-..     None
+..     "./docs/support"
 .. )
 .. ]]]
 .. code-block:: python
@@ -210,23 +206,20 @@ Concatenate two files
     # pcsv_example_3.py
     import pmisc, pcsv
 
+
     def main():
         ctx = pmisc.TmpFile
         with ctx() as fname1:
             with ctx() as fname2:
                 with ctx() as ofname:
                     # Create first data file
-                    data1 = [
-                        [1, 9.99],
-                        [2, 10000],
-                        [3, 0.10]
-                    ]
+                    data1 = [[1, 9.99], [2, 10000], [3, 0.10]]
                     pcsv.write(fname1, data1, append=False)
                     # Create second data file
                     data2 = [
-                        ['Joe', 10, 'Sunday'],
-                        ['Sue', 20, 'Thursday'],
-                        ['Pat', 15, 'Tuesday']
+                        ["Joe", 10, "Sunday"],
+                        ["Sue", 20, "Thursday"],
+                        ["Pat", 15, "Tuesday"],
                     ]
                     pcsv.write(fname2, data2, append=False)
                     # Concatenate file1 and file2. Filter out
@@ -238,23 +231,24 @@ Concatenate two files
                         has_header2=False,
                         dfilter2=[0, 2],
                         ofname=ofname,
-                        ocols=['D1', 'D2']
+                        ocols=["D1", "D2"],
                     )
                     # Verify that resulting file is correct
                     ref_data = [
-                        ['D1', 'D2'],
+                        ["D1", "D2"],
                         [1, 9.99],
                         [2, 10000],
                         [3, 0.10],
-                        ['Joe', 'Sunday'],
-                        ['Sue', 'Thursday'],
-                        ['Pat', 'Tuesday']
+                        ["Joe", "Sunday"],
+                        ["Sue", "Thursday"],
+                        ["Pat", "Tuesday"],
                     ]
                     obj = pcsv.CsvFile(ofname)
                     assert obj.header() == ref_data[0]
                     assert obj.data() == ref_data[1:]
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         main()
 
 .. [[[end]]]
@@ -263,12 +257,15 @@ Merge two files
 ^^^^^^^^^^^^^^^
 
 .. [[[cog
-.. import docs.support.incfile
-.. docs.support.incfile.incfile(
+.. import pcsv
+.. import sys
+.. sys.path.append('.')
+.. import pypkg.incfile
+.. pypkg.incfile.incfile(
 ..     "pcsv_example_4.py",
 ..     cog.out,
 ..     "1,6-",
-..     None
+..     "./docs/support"
 .. )
 .. ]]]
 .. code-block:: python
@@ -276,23 +273,20 @@ Merge two files
     # pcsv_example_4.py
     import pmisc, pcsv
 
+
     def main():
         ctx = pmisc.TmpFile
         with ctx() as fname1:
             with ctx() as fname2:
                 with ctx() as ofname:
                     # Create first data file
-                    data1 = [
-                        [1, 9.99],
-                        [2, 10000],
-                        [3, 0.10]
-                    ]
+                    data1 = [[1, 9.99], [2, 10000], [3, 0.10]]
                     pcsv.write(fname1, data1, append=False)
                     # Create second data file
                     data2 = [
-                        ['Joe', 10, 'Sunday'],
-                        ['Sue', 20, 'Thursday'],
-                        ['Pat', 15, 'Tuesday']
+                        ["Joe", 10, "Sunday"],
+                        ["Sue", 20, "Thursday"],
+                        ["Pat", 15, "Tuesday"],
                     ]
                     pcsv.write(fname2, data2, append=False)
                     # Merge file1 and file2
@@ -301,19 +295,20 @@ Merge two files
                         has_header1=False,
                         fname2=fname2,
                         has_header2=False,
-                        ofname=ofname
+                        ofname=ofname,
                     )
                     # Verify that resulting file is correct
                     ref_data = [
-                        [1, 9.99, 'Joe', 10, 'Sunday'],
-                        [2, 10000, 'Sue', 20, 'Thursday'],
-                        [3, 0.10, 'Pat', 15, 'Tuesday'],
+                        [1, 9.99, "Joe", 10, "Sunday"],
+                        [2, 10000, "Sue", 20, "Thursday"],
+                        [3, 0.10, "Pat", 15, "Tuesday"],
                     ]
                     obj = pcsv.CsvFile(ofname, has_header=False)
                     assert obj.header() == list(range(0, 5))
                     assert obj.data() == ref_data
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         main()
 
 .. [[[end]]]
@@ -322,12 +317,15 @@ Sort a file
 ^^^^^^^^^^^
 
 .. [[[cog
-.. import docs.support.incfile
-.. docs.support.incfile.incfile(
+.. import pcsv
+.. import sys
+.. sys.path.append('.')
+.. import pypkg.incfile
+.. pypkg.incfile.incfile(
 ..     "pcsv_example_5.py",
 ..     cog.out,
 ..     "1,6-",
-..     None
+..     "./docs/support"
 .. )
 .. ]]]
 .. code-block:: python
@@ -335,40 +333,36 @@ Sort a file
     # pcsv_example_5.py
     import pmisc, pcsv
 
+
     def main():
         ctx = pmisc.TmpFile
         with ctx() as ifname:
             with ctx() as ofname:
                 # Create first data file
                 data = [
-                    ['Ctrl', 'Ref', 'Result'],
+                    ["Ctrl", "Ref", "Result"],
                     [1, 3, 10],
                     [1, 4, 20],
                     [2, 4, 30],
                     [2, 5, 40],
-                    [3, 5, 50]
+                    [3, 5, 50],
                 ]
                 pcsv.write(ifname, data, append=False)
                 # Sort
                 pcsv.dsort(
                     fname=ifname,
-                    order=[{'Ctrl':'D'}, {'Ref':'A'}],
+                    order=[{"Ctrl": "D"}, {"Ref": "A"}],
                     has_header=True,
-                    ofname=ofname
+                    ofname=ofname,
                 )
                 # Verify that resulting file is correct
-                ref_data = [
-                    [3, 5, 50],
-                    [2, 4, 30],
-                    [2, 5, 40],
-                    [1, 3, 10],
-                    [1, 4, 20]
-                ]
+                ref_data = [[3, 5, 50], [2, 4, 30], [2, 5, 40], [1, 3, 10], [1, 4, 20]]
                 obj = pcsv.CsvFile(ofname, has_header=True)
-                assert obj.header() == ['Ctrl', 'Ref', 'Result']
+                assert obj.header() == ["Ctrl", "Ref", "Result"]
                 assert obj.data() == ref_data
 
-    if __name__ == '__main__':
+
+    if __name__ == "__main__":
         main()
 
 .. [[[end]]]
@@ -376,38 +370,39 @@ Sort a file
 Interpreter
 ===========
 
-The package has been developed and tested with Python 2.6, 2.7, 3.3, 3.4,
-3.5 and 3.6 under Linux (Debian, Ubuntu), Apple macOS and Microsoft Windows
+The package has been developed and tested with Python 2.7, 3.5, 3.6 and 3.7
+under Linux (Debian, Ubuntu), Apple macOS and Microsoft Windows
 
 Installing
 ==========
 
 .. code-block:: bash
 
-        $ pip install pcsv
+	$ pip install pcsv
 
 Documentation
 =============
 
-Available at `Read the Docs <https://pcsv.readthedocs.org>`_
+Available at `Read the Docs <https://pcsv.readthedocs.io>`_
 
 Contributing
 ============
 
 1. Abide by the adopted `code of conduct
-   <http://contributor-covenant.org/version/1/3/0>`_
+   <https://www.contributor-covenant.org/version/1/4/code-of-conduct>`_
 
 2. Fork the `repository <https://github.com/pmacosta/pcsv>`_ from
    GitHub and then clone personal copy [#f1]_:
 
-        .. code-block:: bash
+    .. code-block:: bash
 
-                $ git clone \
-                      https://github.com/[github-user-name]/pcsv.git
-                Cloning into 'pcsv'...
-                ...
-                $ cd pcsv
-                $ export PCSV_DIR=${PWD}
+        $ github_user=myname
+        $ git clone --recursive \
+              https://github.com/"${github_user}"/pcsv.git
+        Cloning into 'pcsv'...
+        ...
+        $ cd pcsv
+        $ export PCSV_DIR=${PWD}
 
 3. Install the project's Git hooks and build the documentation. The pre-commit
    hook does some minor consistency checks, namely trailing whitespace and
@@ -415,21 +410,21 @@ Contributing
    Pylint. Assuming the directory to which the repository was cloned is
    in the :bash:`$PCSV_DIR` shell environment variable:
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-                $ ${PCSV_DIR}/sbin/complete-cloning.sh
+		$ "${PCSV_DIR}"/pypkg/complete-cloning.sh
                 Installing Git hooks
                 Building pcsv package documentation
                 ...
 
 4. Ensure that the Python interpreter can find the package modules
    (update the :bash:`$PYTHONPATH` environment variable, or use
-   `sys.paths() <https://docs.python.org/2/library/sys.html#sys.path>`_,
+   `sys.paths() <https://docs.python.org/3/library/sys.html#sys.path>`_,
    etc.)
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-                $ export PYTHONPATH=${PYTHONPATH}:${PCSV_DIR}
+		$ export PYTHONPATH=${PYTHONPATH}:${PCSV_DIR}
 
 5. Install the dependencies (if needed, done automatically by pip):
 
@@ -439,47 +434,45 @@ Contributing
     .. ]]]
 
 
-    * `Astroid`_ (Python 2.6: older than 1.4, Python 2.7 or newer: 1.3.8
-      or newer)
+    * `Astroid`_ (1.3.8 or newer)
 
     * `Cog`_ (2.4 or newer)
 
     * `Coverage`_ (3.7.1 or newer)
 
-    * `Docutils`_ (Python 2.6: 0.12 or newer and older than 0.13, Python
-      2.7: 0.12 or newer, Python 3.3: 0.12 or newer and older than 0.13,
-      Python 3.4: 0.12 or newer, Python 3.5: 0.12 or newer, Python 3.6:
-      0.12 or newer)
+    * `Docutils`_ (0.12 or newer)
 
     * `Inline Syntax Highlight Sphinx Extension`_ (0.2 or newer)
 
     * `Mock`_ (Python 2.x only, 1.0.1 or newer)
 
-    * `Pexdoc`_ (1.0.9 or newer)
+    * `Pexdoc`_ (1.1.1 or newer)
 
-    * `Pmisc`_ (1.2.2 or newer)
+    * `Pmisc`_ (1.5.5 or newer)
 
-    * `Py.test`_ (2.7.0 or newer)
+    * `Py.test`_ (3.3.2 or newer)
 
-    * `PyContracts`_ (1.7.2 or newer except 1.7.7)
+    * `PyContracts`_ (1.8.2 or newer)
 
-    * `Pylint`_ (Python 2.6: 1.3 or newer and older than 1.4, Python 2.7
-      or newer: 1.3.1 or newer)
+    * `Pydocstyle`_ (3.0.0 or newer)
 
-    * `Pytest-coverage`_ (1.8.0 or newer)
+    * `Pylint`_ (1.8.1 or newer)
 
-    * `Pytest-xdist`_ (optional, 1.8.0 or newer)
+    * `Pytest-coverage`_ (2.5.1 or newer)
 
-    * `ReadTheDocs Sphinx theme`_ (0.1.9 or newer)
+    * `Pytest-pmisc`_ (1.0.6 or newer)
 
-    * `Sphinx`_ (Python 2.6: 1.2.3 or newer and 1.4.9 or older, Python
-      2.7: 1.5 or newer, Python 3.3: 1.2.3 or newer and 1.4.9 or older,
-      Python 3.4: 1.5 or newer, Python 3.5: 1.5 or newer, Python 3.6:
-      1.5 or newer)
+    * `Pytest-xdist`_ (optional, 1.22.0 or newer)
 
-    * `Tox`_ (1.9.0 or newer)
+    * `ReadTheDocs Sphinx theme`_ (0.2.4 or newer)
 
-    * `Virtualenv`_ (13.1.2 or newer)
+    * `Shellcheck Linter Sphinx Extension`_ (1.0.5 or newer)
+
+    * `Sphinx`_ (1.6.6 or newer)
+
+    * `Tox`_ (2.9.1 or newer)
+
+    * `Virtualenv`_ (15.1.0 or newer)
 
     .. [[[end]]]
 
@@ -491,18 +484,18 @@ Contributing
    coverage of the contribution. Thorough package validation
    can be done via Tox and Py.test:
 
-        .. code-block:: bash
+	.. code-block:: bash
 
             $ tox
             GLOB sdist-make: .../pcsv/setup.py
             py26-pkg inst-nodeps: .../pcsv/.tox/dist/pcsv-...zip
 
    `Setuptools <https://bitbucket.org/pypa/setuptools>`_ can also be used
-   (Tox is configured as its virtual environment manager) [#f2]_:
+   (Tox is configured as its virtual environment manager):
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-            $ python setup.py tests
+	    $ python setup.py tests
             running tests
             running egg_info
             writing requirements to pcsv.egg-info/requires.txt
@@ -510,17 +503,16 @@ Contributing
             ...
 
    Tox (or Setuptools via Tox) runs with the following default environments:
-   ``py26-pkg``, ``py27-pkg``, ``py33-pkg``, ``py34-pkg`` and ``py35-pkg``
-   [#f3]_. These use the Python 2.6, 2.7, 3.3, 3.4 and 3.5 interpreters,
-   respectively, to test all code in the documentation (both in Sphinx
-   ``*.rst`` source files and in docstrings), run all unit tests, measure test
-   coverage and re-build the exceptions documentation. To pass arguments to
-   Py.test (the test runner) use a double dash (``--``) after all the Tox
-   arguments, for example:
+   ``py27-pkg``, ``py35-pkg``, ``py36-pkg`` and ``py37-pkg`` [#f3]_. These use
+   the 2.7, 3.5, 3.6 and 3.7 interpreters, respectively, to test all code in the
+   documentation (both in Sphinx ``*.rst`` source files and in docstrings), run
+   all unit tests, measure test coverage and re-build the exceptions
+   documentation. To pass arguments to Py.test (the test runner) use a double
+   dash (``--``) after all the Tox arguments, for example:
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-            $ tox -e py27-pkg -- -n 4
+	    $ tox -e py27-pkg -- -n 4
             GLOB sdist-make: .../pcsv/setup.py
             py27-pkg inst-nodeps: .../pcsv/.tox/dist/pcsv-...zip
             ...
@@ -528,128 +520,102 @@ Contributing
    Or use the :code:`-a` Setuptools optional argument followed by a quoted
    string with the arguments for Py.test. For example:
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-            $ python setup.py tests -a "-e py27-pkg -- -n 4"
+	    $ python setup.py tests -a "-e py27-pkg -- -n 4"
             running tests
             ...
 
-   There are other convenience environments defined for Tox [#f4]_:
+   There are other convenience environments defined for Tox [#f3]_:
 
-    * ``py26-repl``, ``py27-repl``, ``py33-repl``, ``py34-repl`` and
-      ``py35-repl`` run the Python 2.6, 2.7, 3.3, 3.4 or 3.5 REPL,
-      respectively, in the appropriate virtual environment. The ``pcsv``
-      package is pip-installed by Tox when the environments are created.
-      Arguments to the interpreter can be passed in the command line
-      after a double dash (``--``)
+    * ``py27-repl``, ``py35-repl``, ``py36-repl`` and ``py37-repl`` run the 2.7,
+      3.5, 3.6 or 3.7 REPL, respectively, in the appropriate virtual
+      environment. The ``pcsv`` package is pip-installed by Tox when the
+      environments are created.  Arguments to the interpreter can be passed in
+      the command line after a double dash (``--``)
 
-    * ``py26-test``, ``py27-test``, ``py33-test``, ``py34-test`` and
-      ``py35-test`` run py.test using the Python 2.6, 2.7, 3.3, 3.4
-      or Python 3.5 interpreter, respectively, in the appropriate virtual
-      environment. Arguments to py.test can be passed in the command line
-      after a double dash (``--``) , for example:
+    * ``py27-test``, ``py35-test``, ``py36-test`` and ``py37-test`` run py.test
+      using the Python 2.7, 3.5, Python 3.6 or Python 3.7 interpreter,
+      respectively, in the appropriate virtual environment. Arguments to py.test
+      can be passed in the command line after a double dash (``--``) , for
+      example:
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-            $ tox -e py34-test -- -x test_eng.py
+	    $ tox -e py36-test -- -x test_pcsv.py
             GLOB sdist-make: [...]/pcsv/setup.py
-            py34-test inst-nodeps: [...]/pcsv/.tox/dist/pcsv-[...].zip
-            py34-test runtests: PYTHONHASHSEED='680528711'
-            py34-test runtests: commands[0] | [...]py.test -x test_eng.py
-            ==================== test session starts ====================
-            platform linux -- Python 3.4.2 -- py-1.4.30 -- [...]
+            py36-test inst-nodeps: [...]/pcsv/.tox/dist/pcsv-1.1rc1.zip
+            py36-test installed: -f file:[...]
+            py36-test runtests: PYTHONHASHSEED='1264622266'
+            py36-test runtests: commands[0] | [...]py.test -x test_pcsv.py
+            ===================== test session starts =====================
+            platform linux -- Python 3.6.4, pytest-3.3.1, py-1.5.2, pluggy-0.6.0
+            rootdir: [...]/pcsv/.tox/py36/share/pcsv/tests, inifile: pytest.ini
+            plugins: xdist-1.21.0, forked-0.2, cov-2.5.1
+            collected 414 items
             ...
 
-    * ``py26-cov``, ``py27-cov``, ``py33-cov``, ``py34-cov`` and
-      ``py35-cov`` test code and branch coverage using the Python 2.6,
-      2.7, 3.3, 3.4 or 3.5 interpreter, respectively, in the appropriate
-      virtual environment. Arguments to py.test can be passed in the command
-      line after a double dash (``--``). The report can be found in
+    * ``py27-cov``, ``py35-cov``, ``py36-cov`` and ``py37-cov`` test code and
+      branch coverage using the 2.7, 3.5, 3.6 or 3.7 interpreter, respectively,
+      in the appropriate virtual environment. Arguments to py.test can be passed
+      in the command line after a double dash (``--``). The report can be found
+      in
       :bash:`${PCSV_DIR}/.tox/py[PV]/usr/share/pcsv/tests/htmlcov/index.html`
-      where ``[PV]`` stands for ``26``, ``27``, ``33``, ``34`` or ``35``
-      depending on the interpreter used
+      where ``[PV]`` stands for ``27``, ``35``, ``36`` or ``37`` depending on
+      the interpreter used
 
 8. Verify that continuous integration tests pass. The package has continuous
-   integration configured for Linux (via `Travis <http://www.travis-ci.org>`_)
-   and for Microsoft Windows (via `Appveyor <http://www.appveyor.com>`_).
-   Aggregation/cloud code coverage is configured via
-   `Codecov <https://codecov.io>`_. It is assumed that the Codecov repository
-   upload token in the Travis build is stored in the :bash:`${CODECOV_TOKEN}`
-   environment variable (securely defined in the Travis repository settings
-   page). Travis build artifacts can be transferred to Dropbox using the
-   `Dropbox Uploader <https://github.com/andreafabrizi/Dropbox-Uploader>`_
-   script (included for convenience in the :bash:`${PCSV_DIR}/sbin` directory).
-   For an automatic transfer that does not require manual entering of
-   authentication credentials place the APPKEY, APPSECRET, ACCESS_LEVEL,
-   OAUTH_ACCESS_TOKEN and OAUTH_ACCESS_TOKEN_SECRET values required by
-   Dropbox Uploader in the in the :bash:`${DBU_APPKEY}`,
-   :bash:`${DBU_APPSECRET}`, :bash:`${DBU_ACCESS_LEVEL}`,
-   :bash:`${DBU_OAUTH_ACCESS_TOKEN}` and
-   :bash:`${DBU_OAUTH_ACCESS_TOKEN_SECRET}` environment variables,
-   respectively (also securely defined in Travis repository settings page)
-
+   integration configured for Linux, Apple macOS and Microsoft Windows (all via
+   `Azure DevOps <https://dev.azure.com/pmasdev>`_) Aggregation/cloud code
+   coverage is configured via `Codecov <https://codecov.io>`_. It is assumed
+   that the Codecov repository upload token in the build is stored in the
+   :bash:`$(codecovToken)` environment variable (securely defined in the
+   pipeline settings page).
 
 9. Document the new feature or bug fix (if needed). The script
-   :bash:`${PCSV_DIR}/sbin/build_docs.py` re-builds the whole package
+   :bash:`${PCSV_DIR}/pypkg/build_docs.py` re-builds the whole package
    documentation (re-generates images, cogs source files, etc.):
 
-        .. [[[cog ste('build_docs.py -h', 0, mdir, cog.out) ]]]
+	.. [[[cog pmisc.ste('build_docs.py -h', 0, mdir, cog.out) ]]]
 
-        .. code-block:: bash
+	.. code-block:: bash
 
-            $ ${PUTIL_DIR}/sbin/build_docs.py -h
-            usage: build_docs.py [-h] [-d DIRECTORY] [-r]
-                                 [-n NUM_CPUS] [-t]
+	    $ ${PKG_BIN_DIR}/build_docs.py -h
+	    usage: build_docs.py [-h] [-d DIRECTORY] [-r]
+	                         [-n NUM_CPUS] [-t]
 
-            Build pcsv package documentation
+	    Build pcsv package documentation
 
-            optional arguments:
-              -h, --help            show this help message and exit
-              -d DIRECTORY, --directory DIRECTORY
-                                    specify source file directory
-                                    (default ../pcsv)
-              -r, --rebuild         rebuild exceptions documentation.
-                                    If no module name is given all
-                                    modules with auto-generated
-                                    exceptions documentation are
-                                    rebuilt
-              -n NUM_CPUS, --num-cpus NUM_CPUS
-                                    number of CPUs to use (default: 1)
-              -t, --test            diff original and rebuilt file(s)
-                                    (exit code 0 indicates file(s) are
-                                    identical, exit code 1 indicates
-                                    file(s) are different)
+	    optional arguments:
+	      -h, --help            show this help message and exit
+	      -d DIRECTORY, --directory DIRECTORY
+	                            specify source file directory
+	                            (default ../pcsv)
+	      -r, --rebuild         rebuild exceptions documentation.
+	                            If no module name is given all
+	                            modules with auto-generated
+	                            exceptions documentation are
+	                            rebuilt
+	      -n NUM_CPUS, --num-cpus NUM_CPUS
+	                            number of CPUs to use (default: 1)
+	      -t, --test            diff original and rebuilt file(s)
+	                            (exit code 0 indicates file(s) are
+	                            identical, exit code 1 indicates
+	                            file(s) are different)
 
-
-        .. [[[end]]]
-
-    Output of shell commands can be automatically included in reStructuredText
-    source files with the help of Cog_ and the :code:`docs.support.term_echo` module.
-
-
-
-    Similarly Python files can be included in docstrings with the help of Cog_
-    and the :code:`docs.support.incfile` module
-
+	.. [[[end]]]
 
 .. rubric:: Footnotes
 
 .. [#f1] All examples are for the `bash <https://www.gnu.org/software/bash/>`_
    shell
 
-.. [#f2] It appears that Scipy dependencies do not include Numpy (as they
-   should) so running the tests via Setuptools will typically result in an
-   error. The pcsv requirement file specifies Numpy before Scipy and this
-   installation order is honored by Tox so running the tests via Tox sidesteps
-   Scipy's broken dependency problem but requires Tox to be installed before
-   running the tests (Setuptools installs Tox if needed)
-
-.. [#f3] It is assumed that all the Python interpreters are in the executables
+.. [#f2] It is assumed that all the Python interpreters are in the executables
    path. Source code for the interpreters can be downloaded from Python's main
-   `site <http://www.python.org/downloads>`_
+   `site <https://www.python.org/downloads/>`_
 
-.. [#f4] Tox configuration largely inspired by
-   `Ionel's codelog <http://blog.ionelmc.ro/2015/04/14/
+.. [#f3] Tox configuration largely inspired by
+   `Ionel's codelog <https://blog.ionelmc.ro/2015/04/14/
    tox-tricks-and-patterns/>`_
 
 

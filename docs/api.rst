@@ -3,11 +3,11 @@
 .. See LICENSE for details
 
 .. _NonNegativeInteger:
-   http://pexdoc.readthedocs.io/en/stable/ptypes.html#nonnegativeinteger
+   https://pexdoc.readthedocs.io/en/stable/ptypes.html#nonnegativeinteger
 .. _FileName:
-   http://pexdoc.readthedocs.io/en/stable/ptypes.html#filename
+   https://pexdoc.readthedocs.io/en/stable/ptypes.html#filename
 .. _FileNameExists:
-   http://pexdoc.readthedocs.io/en/stable/ptypes.html#filenameexists
+   https://pexdoc.readthedocs.io/en/stable/ptypes.html#filenameexists
 
 ###
 API
@@ -140,7 +140,7 @@ Introduction
 
 The pseudo-types defined below can be used in contracts of the
 `PyContracts <https://andreacensi.github.io/contracts>`_ or
-`Pexdoc <http://pexdoc.readthedocs.org>`_ libraries. As an example, with the
+`Pexdoc <https://pexdoc.readthedocs.org>`_ libraries. As an example, with the
 latter:
 
     .. code-block:: python

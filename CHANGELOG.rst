@@ -5,6 +5,10 @@
 Changelog
 =========
 
+* 1.0.7 [2019-03-XX]: Dropped support for Python 2.6, 3.3 and 3.4. Updates to
+  support newest versions of dependencies. Adopted lightweight package
+  management framework
+
 * 1.0.6 [2017-09-10]: Fixed bug while filtering rows that have empty column
   specified in filter. Fixed broken multi-line links in documentation
 
