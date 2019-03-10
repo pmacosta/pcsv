@@ -16,7 +16,7 @@ def _read(fname):
 def _readlines(fname, fpointer1=open, fpointer2=open):
     """Read all lines from file."""
     # fpointer1, fpointer2 arguments to ease testing
-    try:
+    try:  # pragma: no cover
         with fpointer1(fname, "r") as fobj:
             return fobj.readlines()
     except UnicodeDecodeError:  # pragma: no cover
