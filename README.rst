@@ -22,12 +22,12 @@
 
 .. image::
     https://dev.azure.com/pmasdev/pcsv/_apis/build/status/pmacosta.pcsv?branchName=master
-    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=3&_a=summary
+    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=7&_a=summary
     :alt: Continuous integration test status
 
 .. image::
     https://img.shields.io/azure-devops/coverage/pmasdev/pcsv/7.svg
-    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=6&_a=summary
+    :target: https://dev.azure.com/pmasdev/pcsv/_build?definitionId=7&_a=summary
     :alt: Continuous integration test coverage
 
 .. image::
@@ -43,15 +43,6 @@ Description
 .. role:: bash(code)
 	:language: bash
 
-.. [[[cog
-.. import os, sys, pmisc, docs.support.requirements_to_rst
-.. file_name = sys.modules['docs.support.requirements_to_rst'].__file__
-.. mdir = os.path.join(os.path.realpath(
-..    os.path.dirname(os.path.dirname(os.path.dirname(file_name)))), 'pypkg'
-.. )
-.. docs.support.requirements_to_rst.def_links(cog)
-.. ]]]
-.. _Astroid: https://bitbucket.org/logilab/astroid
 .. _Cog: https://nedbatchelder.com/code/cog
 .. _Coverage: https://coverage.readthedocs.io
 .. _Docutils: http://docutils.sourceforge.net/docs
@@ -73,12 +64,11 @@ Description
    https://pypi.org/project/sphinxcontrib-shellcheck
 .. _Tox: https://testrun.org/tox
 .. _Virtualenv: https://docs.python-guide.org/dev/virtualenvs
-.. [[[end]]]
 
 This module can be used to handle comma-separated values (CSV) files and do
 lightweight processing of their data with support for row and column
-filtering. In addition to basic read, write and data replacement, files
-can be concatenated, merged, and sorted
+filtering. In addition to basic read, write and data replacement, files can be
+concatenated, merged, and sorted
 
 Examples
 --------
@@ -86,23 +76,10 @@ Examples
 Read/write
 ^^^^^^^^^^
 
-.. [[[cog
-.. import pcsv
-.. import sys
-.. sys.path.append('.')
-.. import pypkg.incfile
-.. pypkg.incfile.incfile(
-..     "pcsv_example_1.py",
-..     cog.out,
-..     "1,6-",
-..     "./docs/support"
-.. )
-.. ]]]
 .. code-block:: python
 
     # pcsv_example_1.py
     import pmisc, pcsv
-
 
     def main():
         with pmisc.TmpFile() as fname:
@@ -121,32 +98,16 @@ Read/write
         obj.rfilter = {"Item": [1, 3]}
         assert obj.data(filtered=True) == [ref_data[1], ref_data[3]]
 
-
     if __name__ == "__main__":
         main()
-
-.. [[[end]]]
 
 Replace data
 ^^^^^^^^^^^^
 
-.. [[[cog
-.. import pcsv
-.. import sys
-.. sys.path.append('.')
-.. import pypkg.incfile
-.. pypkg.incfile.incfile(
-..     "pcsv_example_2.py",
-..     cog.out,
-..     "1,6-",
-..     "./docs/support"
-.. )
-.. ]]]
 .. code-block:: python
 
     # pcsv_example_2.py
     import pmisc, pcsv
-
 
     def main():
         ctx = pmisc.TmpFile
@@ -180,32 +141,16 @@ Replace data
                     assert obj.header() == ref_data[0]
                     assert obj.data() == ref_data[1:]
 
-
     if __name__ == "__main__":
         main()
-
-.. [[[end]]]
 
 Concatenate two files
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. [[[cog
-.. import pcsv
-.. import sys
-.. sys.path.append('.')
-.. import pypkg.incfile
-.. pypkg.incfile.incfile(
-..     "pcsv_example_3.py",
-..     cog.out,
-..     "1,6-",
-..     "./docs/support"
-.. )
-.. ]]]
 .. code-block:: python
 
     # pcsv_example_3.py
     import pmisc, pcsv
-
 
     def main():
         ctx = pmisc.TmpFile
@@ -247,32 +192,16 @@ Concatenate two files
                     assert obj.header() == ref_data[0]
                     assert obj.data() == ref_data[1:]
 
-
     if __name__ == "__main__":
         main()
-
-.. [[[end]]]
 
 Merge two files
 ^^^^^^^^^^^^^^^
 
-.. [[[cog
-.. import pcsv
-.. import sys
-.. sys.path.append('.')
-.. import pypkg.incfile
-.. pypkg.incfile.incfile(
-..     "pcsv_example_4.py",
-..     cog.out,
-..     "1,6-",
-..     "./docs/support"
-.. )
-.. ]]]
 .. code-block:: python
 
     # pcsv_example_4.py
     import pmisc, pcsv
-
 
     def main():
         ctx = pmisc.TmpFile
@@ -307,32 +236,16 @@ Merge two files
                     assert obj.header() == list(range(0, 5))
                     assert obj.data() == ref_data
 
-
     if __name__ == "__main__":
         main()
-
-.. [[[end]]]
 
 Sort a file
 ^^^^^^^^^^^
 
-.. [[[cog
-.. import pcsv
-.. import sys
-.. sys.path.append('.')
-.. import pypkg.incfile
-.. pypkg.incfile.incfile(
-..     "pcsv_example_5.py",
-..     cog.out,
-..     "1,6-",
-..     "./docs/support"
-.. )
-.. ]]]
 .. code-block:: python
 
     # pcsv_example_5.py
     import pmisc, pcsv
-
 
     def main():
         ctx = pmisc.TmpFile
@@ -361,11 +274,8 @@ Sort a file
                 assert obj.header() == ["Ctrl", "Ref", "Result"]
                 assert obj.data() == ref_data
 
-
     if __name__ == "__main__":
         main()
-
-.. [[[end]]]
 
 Interpreter
 ===========
@@ -376,7 +286,7 @@ under Linux (Debian, Ubuntu), Apple macOS and Microsoft Windows
 Installing
 ==========
 
-.. code-block:: bash
+.. code-block:: console
 
 	$ pip install pcsv
 
@@ -391,219 +301,218 @@ Contributing
 1. Abide by the adopted `code of conduct
    <https://www.contributor-covenant.org/version/1/4/code-of-conduct>`_
 
-2. Fork the `repository <https://github.com/pmacosta/pcsv>`_ from
-   GitHub and then clone personal copy [#f1]_:
+2. Fork the `repository <https://github.com/pmacosta/pcsv>`_ from GitHub and
+   then clone personal copy [#f1]_:
 
-    .. code-block:: bash
+    .. code-block:: console
 
         $ github_user=myname
-        $ git clone --recursive \
+        $ git clone --recurse-submodules \
               https://github.com/"${github_user}"/pcsv.git
         Cloning into 'pcsv'...
         ...
-        $ cd pcsv
+        $ cd pcsv || exit 1
         $ export PCSV_DIR=${PWD}
+        $
 
-3. Install the project's Git hooks and build the documentation. The pre-commit
-   hook does some minor consistency checks, namely trailing whitespace and
-   `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ compliance via
-   Pylint. Assuming the directory to which the repository was cloned is
-   in the :bash:`$PCSV_DIR` shell environment variable:
+3. The package uses two sub-modules: a set of custom Pylint plugins to help with
+   some areas of code quality and consistency (under the ``pylint_plugins``
+   directory), and a lightweight package management framework (under the
+   ``pypkg`` directory). Additionally, the `pre-commit framework
+   <https://pre-commit.com/>`_ is used to perform various pre-commit code
+   quality and consistency checks. To enable the pre-commit hooks:
 
-	.. code-block:: bash
+    .. code-block:: console
 
-		$ "${PCSV_DIR}"/pypkg/complete-cloning.sh
-                Installing Git hooks
-                Building pcsv package documentation
-                ...
+        $ cd "${PCSV_DIR}" || exit 1
+        $ pre-commit install
+        pre-commit installed at .../pcsv/.git/hooks/pre-commit
+        $
 
 4. Ensure that the Python interpreter can find the package modules
    (update the :bash:`$PYTHONPATH` environment variable, or use
    `sys.paths() <https://docs.python.org/3/library/sys.html#sys.path>`_,
    etc.)
 
-	.. code-block:: bash
+   .. code-block:: console
 
-		$ export PYTHONPATH=${PYTHONPATH}:${PCSV_DIR}
+       $ export PYTHONPATH=${PYTHONPATH}:${PCSV_DIR}
+       $
 
 5. Install the dependencies (if needed, done automatically by pip):
 
-    .. [[[cog
-    .. import docs.support.requirements_to_rst
-    .. docs.support.requirements_to_rst.proc_requirements(cog)
-    .. ]]]
+    * `Cog`_ (2.5.1 or newer)
 
+    * `Coverage`_ (4.5.3 or newer)
 
-    * `Astroid`_ (1.3.8 or newer)
-
-    * `Cog`_ (2.4 or newer)
-
-    * `Coverage`_ (3.7.1 or newer)
-
-    * `Docutils`_ (0.12 or newer)
+    * `Docutils`_ (0.14 or newer)
 
     * `Inline Syntax Highlight Sphinx Extension`_ (0.2 or newer)
 
-    * `Mock`_ (Python 2.x only, 1.0.1 or newer)
+    * `Mock`_ (Python 2.x only, 2.0.0 or newer)
 
-    * `Pexdoc`_ (1.1.1 or newer)
+    * `Pexdoc`_ (1.1.4 or newer)
 
-    * `Pmisc`_ (1.5.5 or newer)
+    * `Pmisc`_ (1.5.8 or newer)
 
-    * `Py.test`_ (3.3.2 or newer)
+    * `Py.test`_ (4.3.1 or newer)
 
     * `PyContracts`_ (1.8.2 or newer)
 
     * `Pydocstyle`_ (3.0.0 or newer)
 
-    * `Pylint`_ (1.8.1 or newer)
+    * `Pylint`_ (Python 2.x: 1.9.4 or newer, Python 3.x: 2.3.1 or newer)
 
-    * `Pytest-coverage`_ (2.5.1 or newer)
+    * `Pytest-coverage`_ (2.6.1 or newer)
 
-    * `Pytest-pmisc`_ (1.0.6 or newer)
+    * `Pytest-pmisc`_ (1.0.7 or newer)
 
-    * `Pytest-xdist`_ (optional, 1.22.0 or newer)
+    * `Pytest-xdist`_ (optional, 1.26.1 or newer)
 
-    * `ReadTheDocs Sphinx theme`_ (0.2.4 or newer)
+    * `ReadTheDocs Sphinx theme`_ (0.4.3 or newer)
 
-    * `Shellcheck Linter Sphinx Extension`_ (1.0.5 or newer)
+    * `Shellcheck Linter Sphinx Extension`_ (1.0.8 or newer)
 
-    * `Sphinx`_ (1.6.6 or newer)
+    * `Sphinx`_ (1.8.5 or newer)
 
-    * `Tox`_ (2.9.1 or newer)
+    * `Tox`_ (3.7.0 or newer)
 
-    * `Virtualenv`_ (15.1.0 or newer)
-
-    .. [[[end]]]
+    * `Virtualenv`_ (16.4.3 or newer)
 
 6. Implement a new feature or fix a bug
 
 7. Write a unit test which shows that the contributed code works as expected.
    Run the package tests to ensure that the bug fix or new feature does not
-   have adverse side effects. If possible achieve 100% code and branch
+   have adverse side effects. If possible achieve 100\% code and branch
    coverage of the contribution. Thorough package validation
-   can be done via Tox and Py.test:
+   can be done via Tox and Pytest:
 
-	.. code-block:: bash
+   .. code-block:: console
 
-            $ tox
-            GLOB sdist-make: .../pcsv/setup.py
-            py26-pkg inst-nodeps: .../pcsv/.tox/dist/pcsv-...zip
+       $ PKG_NAME=pcsv tox
+       GLOB sdist-make: .../pcsv/setup.py
+       py27-pkg create: .../pcsv/.tox/py27
+       py27-pkg installdeps: -r.../pcsv/requirements/tests_py27.pip, -r.../pcsv/requirements/docs_py27.pip
+       ...
+         py27-pkg: commands succeeded
+         py35-pkg: commands succeeded
+         py36-pkg: commands succeeded
+         py37-pkg: commands succeeded
+         congratulations :)
+       $
 
    `Setuptools <https://bitbucket.org/pypa/setuptools>`_ can also be used
    (Tox is configured as its virtual environment manager):
 
-	.. code-block:: bash
+   .. code-block:: console
 
-	    $ python setup.py tests
-            running tests
-            running egg_info
-            writing requirements to pcsv.egg-info/requires.txt
-            writing pcsv.egg-info/PKG-INFO
-            ...
+       $ PKG_NAME=pcsv python setup.py tests
+       running tests
+       running egg_info
+       writing pcsv.egg-info/PKG-INFO
+       writing dependency_links to pcsv.egg-info/dependency_links.txt
+       writing requirements to pcsv.egg-info/requires.txt
+       ...
+         py27-pkg: commands succeeded
+         py35-pkg: commands succeeded
+         py36-pkg: commands succeeded
+         py37-pkg: commands succeeded
+         congratulations :)
+       $
 
    Tox (or Setuptools via Tox) runs with the following default environments:
    ``py27-pkg``, ``py35-pkg``, ``py36-pkg`` and ``py37-pkg`` [#f3]_. These use
-   the 2.7, 3.5, 3.6 and 3.7 interpreters, respectively, to test all code in the
-   documentation (both in Sphinx ``*.rst`` source files and in docstrings), run
-   all unit tests, measure test coverage and re-build the exceptions
-   documentation. To pass arguments to Py.test (the test runner) use a double
-   dash (``--``) after all the Tox arguments, for example:
+   the 2.7, 3.5, 3.6 and 3.7 interpreters, respectively, to test all code in
+   the documentation (both in Sphinx ``*.rst`` source files and in
+   docstrings), run all unit tests, measure test coverage and re-build the
+   exceptions documentation. To pass arguments to Pytest (the test runner) use
+   a double dash (``--``) after all the Tox arguments, for example:
 
-	.. code-block:: bash
+   .. code-block:: console
 
-	    $ tox -e py27-pkg -- -n 4
-            GLOB sdist-make: .../pcsv/setup.py
-            py27-pkg inst-nodeps: .../pcsv/.tox/dist/pcsv-...zip
-            ...
+       $ PKG_NAME=pcsv tox -e py27-pkg -- -n 4
+       GLOB sdist-make: .../pcsv/setup.py
+       py27-pkg inst-nodeps: .../pcsv/.tox/.tmp/package/1/pcsv-1.0.8.zip
+       ...
+         py27-pkg: commands succeeded
+         congratulations :)
+       $
 
    Or use the :code:`-a` Setuptools optional argument followed by a quoted
-   string with the arguments for Py.test. For example:
+   string with the arguments for Pytest. For example:
 
-	.. code-block:: bash
+   .. code-block:: console
 
-	    $ python setup.py tests -a "-e py27-pkg -- -n 4"
-            running tests
-            ...
+       $ PKG_NAME=pcsv python setup.py tests -a "-e py27-pkg -- -n 4"
+       running tests
+       ...
+         py27-pkg: commands succeeded
+         congratulations :)
+       $
 
    There are other convenience environments defined for Tox [#f3]_:
 
-    * ``py27-repl``, ``py35-repl``, ``py36-repl`` and ``py37-repl`` run the 2.7,
-      3.5, 3.6 or 3.7 REPL, respectively, in the appropriate virtual
-      environment. The ``pcsv`` package is pip-installed by Tox when the
-      environments are created.  Arguments to the interpreter can be passed in
-      the command line after a double dash (``--``)
+    * ``py27-repl``, ``py35-repl``, ``py36-repl`` and ``py37-repl`` run the
+      Python 2.7, 3.5, 3.6 and 3.7 REPL, respectively, in the appropriate
+      virtual environment. The ``pcsv`` package is pip-installed by Tox when
+      the environments are created.  Arguments to the interpreter can be
+      passed in the command line after a double dash (``--``).
 
-    * ``py27-test``, ``py35-test``, ``py36-test`` and ``py37-test`` run py.test
-      using the Python 2.7, 3.5, Python 3.6 or Python 3.7 interpreter,
-      respectively, in the appropriate virtual environment. Arguments to py.test
-      can be passed in the command line after a double dash (``--``) , for
-      example:
+    * ``py27-test``, ``py35-test``, ``py36-test`` and ``py37-test`` run Pytest
+      using the Python 2.7, 3.5, 3.6 and 3.7 interpreter, respectively, in the
+      appropriate virtual environment. Arguments to pytest can be passed in
+      the command line after a double dash (``--``) , for example:
 
-	.. code-block:: bash
+      .. code-block:: console
 
-	    $ tox -e py36-test -- -x test_pcsv.py
-            GLOB sdist-make: [...]/pcsv/setup.py
-            py36-test inst-nodeps: [...]/pcsv/.tox/dist/pcsv-1.1rc1.zip
-            py36-test installed: -f file:[...]
-            py36-test runtests: PYTHONHASHSEED='1264622266'
-            py36-test runtests: commands[0] | [...]py.test -x test_pcsv.py
-            ===================== test session starts =====================
-            platform linux -- Python 3.6.4, pytest-3.3.1, py-1.5.2, pluggy-0.6.0
-            rootdir: [...]/pcsv/.tox/py36/share/pcsv/tests, inifile: pytest.ini
-            plugins: xdist-1.21.0, forked-0.2, cov-2.5.1
-            collected 414 items
-            ...
-
-    * ``py27-cov``, ``py35-cov``, ``py36-cov`` and ``py37-cov`` test code and
-      branch coverage using the 2.7, 3.5, 3.6 or 3.7 interpreter, respectively,
-      in the appropriate virtual environment. Arguments to py.test can be passed
-      in the command line after a double dash (``--``). The report can be found
-      in
+       $ PKG_NAME=pcsv tox -e py27-test -- -x test_pcsv.py
+       GLOB sdist-make: .../pcsv/setup.py
+       py27-pkg inst-nodeps: .../pcsv/.tox/.tmp/package/1/pcsv-1.0.8.zip
+       ...
+         py27-pkg: commands succeeded
+         congratulations :)
+       $
+    * ``py27-test``, ``py35-test``, ``py36-test`` and ``py37-test`` test code
+      and branch coverage using the 2.7, 3.5, 3.6 and 3.7 interpreter,
+      respectively, in the appropriate virtual environment. Arguments to
+      pytest can be passed in the command line after a double dash (``--``).
+      The report can be found in
       :bash:`${PCSV_DIR}/.tox/py[PV]/usr/share/pcsv/tests/htmlcov/index.html`
-      where ``[PV]`` stands for ``27``, ``35``, ``36`` or ``37`` depending on
-      the interpreter used
+      where ``[PV]`` stands for ``2.7``, ``3.5``, ``3.6`` or ``3.7`` depending
+      on the interpreter used.
 
 8. Verify that continuous integration tests pass. The package has continuous
    integration configured for Linux, Apple macOS and Microsoft Windows (all via
-   `Azure DevOps <https://dev.azure.com/pmasdev>`_) Aggregation/cloud code
-   coverage is configured via `Codecov <https://codecov.io>`_. It is assumed
-   that the Codecov repository upload token in the build is stored in the
-   :bash:`$(codecovToken)` environment variable (securely defined in the
-   pipeline settings page).
+   `Azure DevOps <https://dev.azure.com/pmasdev>`_).
 
 9. Document the new feature or bug fix (if needed). The script
    :bash:`${PCSV_DIR}/pypkg/build_docs.py` re-builds the whole package
    documentation (re-generates images, cogs source files, etc.):
 
-	.. [[[cog pmisc.ste('build_docs.py -h', 0, mdir, cog.out) ]]]
+   .. code-block:: console
 
-	.. code-block:: bash
+       $ "${PCSV_DIR}"/pypkg/build_docs.py -h
+       usage: build_docs.py [-h] [-d DIRECTORY] [-r]
+                            [-n NUM_CPUS] [-t]
 
-	    $ ${PKG_BIN_DIR}/build_docs.py -h
-	    usage: build_docs.py [-h] [-d DIRECTORY] [-r]
-	                         [-n NUM_CPUS] [-t]
+       Build pcsv package documentation
 
-	    Build pcsv package documentation
-
-	    optional arguments:
-	      -h, --help            show this help message and exit
-	      -d DIRECTORY, --directory DIRECTORY
-	                            specify source file directory
-	                            (default ../pcsv)
-	      -r, --rebuild         rebuild exceptions documentation.
-	                            If no module name is given all
-	                            modules with auto-generated
-	                            exceptions documentation are
-	                            rebuilt
-	      -n NUM_CPUS, --num-cpus NUM_CPUS
-	                            number of CPUs to use (default: 1)
-	      -t, --test            diff original and rebuilt file(s)
-	                            (exit code 0 indicates file(s) are
-	                            identical, exit code 1 indicates
-	                            file(s) are different)
-
-	.. [[[end]]]
+       optional arguments:
+         -h, --help            show this help message and exit
+         -d DIRECTORY, --directory DIRECTORY
+                               specify source file directory
+                               (default ../pcsv)
+         -r, --rebuild         rebuild exceptions documentation.
+                               If no module name is given all
+                               modules with auto-generated
+                               exceptions documentation are
+                               rebuilt
+         -n NUM_CPUS, --num-cpus NUM_CPUS
+                               number of CPUs to use (default: 1)
+         -t, --test            diff original and rebuilt file(s)
+                               (exit code 0 indicates file(s) are
+                               identical, exit code 1 indicates
+                               file(s) are different)
 
 .. rubric:: Footnotes
 
@@ -617,7 +526,6 @@ Contributing
 .. [#f3] Tox configuration largely inspired by
    `Ionel's codelog <https://blog.ionelmc.ro/2015/04/14/
    tox-tricks-and-patterns/>`_
-
 
 License
 =======

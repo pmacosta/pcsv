@@ -5,6 +5,8 @@
 Changelog
 =========
 
+* 1.0.8 [2019-03-22]: Documentation and dependency update
+
 * 1.0.7 [2019-03-09]: Dropped support for Python 2.6, 3.3 and 3.4. Updates to
   support newest versions of dependencies. Adopted lightweight package
   management framework

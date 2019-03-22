@@ -54,7 +54,7 @@ distro: docs clean sdist wheel
 
 docs: FORCE
 	@$(SBIN_DIR)/build_docs.py $(ARGS)
-	@cd $(PKG_DIR)/docs && make linkcheck
+	@cd $(PKG_DIR)/docs && make linkcheck && make lintshell
 
 default:
 	@echo "No default action"
@@ -87,6 +87,8 @@ sterile: clean
 	@rm -rf $(PKG_DIR)/.tox
 
 test: FORCE
+	@cd $(SBIN_DIR) && ./gen_req_files.py
+	@cd $(SBIN_DIR) && ./gen_pkg_manifest.py
 	@$(SBIN_DIR)/rtest.sh $(ARGS)
 
 upload: lint distro
